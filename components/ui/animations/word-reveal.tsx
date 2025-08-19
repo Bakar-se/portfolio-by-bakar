@@ -49,7 +49,7 @@ export default function WordReveal({
       initial="hidden"
       animate="visible"
       className={cn(
-        "text-accent-foreground text-center text-5xl font-bold tracking-[-0.02em] drop-shadow-sm md:text-6xl md:leading-[5rem]",
+        "text-accent-foreground text-center text-4xl font-bold tracking-[-0.02em] drop-shadow-sm md:text-6xl md:leading-[5rem]",
         className,
       )}
     >
