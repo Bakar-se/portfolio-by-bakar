@@ -143,7 +143,7 @@ const Profile: FC<ProfileProps> = memo(({ className }) => {
               </div>
             ))}
           </InfiniteSlider>
-          <ProgressiveBlur
+          {/* <ProgressiveBlur
             className="pointer-events-none absolute top-0 left-0 h-full w-[50px] sm:w-[100px]"
             direction="left"
             blurIntensity={1}
@@ -152,7 +152,7 @@ const Profile: FC<ProfileProps> = memo(({ className }) => {
             className="pointer-events-none absolute top-0 right-0 h-full w-[50px] sm:w-[100px]"
             direction="right"
             blurIntensity={1}
-          />
+          /> */}
         </div>
       </MotionEffect>
     </section>
