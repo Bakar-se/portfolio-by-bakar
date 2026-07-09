@@ -1,5 +1,6 @@
 "use client";
 
+import TanStackQueryProvider from "@/components/providers/tanstack-query-provider";
 import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
@@ -27,7 +28,7 @@ import {
   type KeyboardEvent,
 } from "react";
 
-const SearchButton = ({ onOpenChange }: { onOpenChange?: () => void }) => {
+const SearchButtonInner = ({ onOpenChange }: { onOpenChange?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -371,6 +372,14 @@ const SearchButton = ({ onOpenChange }: { onOpenChange?: () => void }) => {
         </CommandList>
       </CommandDialog>
     </Fragment>
+  );
+};
+
+const SearchButton = (props: { onOpenChange?: () => void }) => {
+  return (
+    <TanStackQueryProvider>
+      <SearchButtonInner {...props} />
+    </TanStackQueryProvider>
   );
 };
 

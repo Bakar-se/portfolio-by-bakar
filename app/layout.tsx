@@ -1,6 +1,7 @@
-import TanStackQueryProvider from "@/components/providers/tanstack-query-provider";
 import TailwindIndicator from "@/components/ui/tailwind-indicator";
+import { JsonLd } from "@/components/json-ld";
 import { AUTHOR, FAVICONS, HEAD, KEYWORDS, OPEN_GRAPH } from "@/config/seo";
+import { personJsonLd } from "@/lib/json-ld";
 import { cn, getBaseUrl } from "@/lib/utils";
 import "@/styles/tailwind.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
@@ -79,6 +80,7 @@ export const metadata: Metadata = {
     canonical: getBaseUrl(),
     types: {
       "application/rss+xml": `${getBaseUrl("/rss.xml")}`,
+      "application/atom+xml": `${getBaseUrl("/feed.xml")}`,
     },
     languages: {
       "en-US": getBaseUrl(),
@@ -162,12 +164,9 @@ export default function RootLayout({
         )}
         suppressHydrationWarning={true}
       >
-        {/* URL query state management provider */}
+        <JsonLd data={personJsonLd()} />
         <NuqsAdapter>
-          {/* React Query provider for data fetching */}
-          <TanStackQueryProvider>
-            {/* Theme provider for dark/light mode support */}
-            <ThemeProvider
+          <ThemeProvider
               attribute="class"
               defaultTheme="light"
               enableSystem={false}
@@ -183,7 +182,6 @@ export default function RootLayout({
               {/* Tailwind CSS breakpoint indicator (development only) */}
               <TailwindIndicator />
             </ThemeProvider>
-          </TanStackQueryProvider>
         </NuqsAdapter>
         {/* Toast notifications provider */}
         <Toaster />

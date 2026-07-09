@@ -75,7 +75,7 @@ export default async function AboutPage() {
                 <Image
                   title="Cover Image"
                   alt="Cover Image"
-                  src="/image1.png"
+                  src="/images/cover-photo.jpg"
                   layout="responsive"
                   width={1200}
                   height={630}

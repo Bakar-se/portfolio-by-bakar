@@ -4,12 +4,15 @@ import { DocsLayout } from "@/components/fuma/fuma-layout";
 import { DocsBody, DocsPage } from "@/components/fuma/fuma-page";
 import Header from "@/components/header/main";
 import Heading from "@/components/heading/main";
+import { JsonLd } from "@/components/json-ld";
 import { MotionEffect } from "@/components/ui/animations/motion-effect";
 import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
+import { articleJsonLd } from "@/lib/json-ld";
+import { buildPostMetadata, type PostSeoData } from "@/lib/post-seo";
 import { source } from "@/lib/source";
-import { getBaseUrl } from "@/lib/utils";
 import { getMDXComponents } from "@/mdx-components";
 import { MDXContent } from "@content-collections/mdx/react";
+import { allPosts } from "content-collections";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
@@ -21,64 +24,61 @@ interface Props {
   }>;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+function getRawPost(slug: string) {
+  return allPosts.find(
+    (post) => post._meta.path.replace(/\.mdx?$/, "") === slug,
+  );
+}
+
+function toPostSeoData(
+  post: NonNullable<ReturnType<typeof getRawPost>>,
+): PostSeoData {
+  return {
+    title: post.title,
+    description: post.description,
+    date: post.date,
+    category: post.category,
+    tags: post.tags,
+    seo: post.seo,
+    image: post.image,
+    author: post.author,
+  };
+}
+
+export async function generateStaticParams() {
+  return source.generateParams().map((param) => ({
+    slug: param.slug[0],
+  }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  // const post = allPosts.find((post) => post._meta.path === slug);
   const post = source.getPage([slug]);
   if (!post) notFound();
-  if (!post) {
-    return notFound();
-  }
-  return {
-    title: post.data.title || "Blog Post",
-    description:
-      post.data.description.slice(0, 100) + ("..." as string) ||
-      "Read this insightful blog post.",
-    keywords: post.data.seo?.join(", ") || "blog, mdx, next.js",
-    alternates: {
-      canonical: getBaseUrl(`blog/post/${slug}`),
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-    openGraph: {
-      title: post.data.title,
-      description: post.data.description.slice(0, 100) + ("..." as string),
-      images: [
-        {
-          url: post.data.image,
-          width: 1200,
-          height: 630,
-          alt: post.data.title,
-          type: "image/png",
-        },
-      ],
-      type: "article",
-      url: getBaseUrl(`blog/post/${slug}`),
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.data.title,
-      description: post.data.description.slice(0, 100) + ("..." as string),
-      images: post.data.image ? [post.data.image] : undefined,
-    },
-  };
+
+  const rawPost = getRawPost(slug);
+  if (!rawPost) notFound();
+
+  return buildPostMetadata(toPostSeoData(rawPost), slug);
 }
 
 export default async function BlogPost({ params }: Props) {
   const { slug } = await params;
   const post = source.getPage([slug]);
-  if (!post) {
+  const rawPost = getRawPost(slug);
+
+  if (!post || !rawPost) {
     return notFound();
   }
 
+  const seoData = toPostSeoData(rawPost);
+  const readMinutes = readingTime(rawPost.content, {
+    wordsPerMinute: 100,
+  }).minutes;
+
   return (
     <Fragment>
+      <JsonLd data={articleJsonLd(seoData, slug)} />
       <Header showProgressBar={true} />
       <Heading variant="blog">
         <MotionEffect
@@ -97,9 +97,7 @@ export default async function BlogPost({ params }: Props) {
             authorImage={post.data.authorAvatar}
             authorName={post.data.author}
             category={post.data.category}
-            readTime={
-              readingTime(post.data.content, { wordsPerMinute: 100 }).minutes
-            }
+            readTime={readMinutes}
             imageUrl={post.data.image}
           />
         </MotionEffect>

@@ -82,7 +82,6 @@ export async function getPostsBySearchQuery(query: string) {
           seo: post.seo,
         },
         content: getContextAroundMatch(post.content, searchQuery),
-        mdx: post.mdx,
         score,
       });
     }

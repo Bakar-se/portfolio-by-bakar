@@ -10,7 +10,7 @@ export function getBaseUrl(slug?: string): string {
     process.env.NEXT_PUBLIC_BASE_URL ||
     (process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
-      : "https://its-bakar.com");
+      : "https://bakar.info");
 
   if (!slug) return baseUrl;
 

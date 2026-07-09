@@ -2,30 +2,11 @@ import { slugify } from "@/lib/utils";
 import { defineCollection, defineConfig } from "@content-collections/core";
 import { compileMDX } from "@content-collections/mdx";
 import {
-  createDocSchema,
   createMetaSchema,
   transformMDX,
 } from "@fumadocs/content-collections/configuration";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { rehypeParseCodeBlocks } from "./shiki-rehype.mjs";
-
-const docs = defineCollection({
-  name: "docs",
-  directory: "content/posts",
-  include: "**/*.mdx",
-  schema: (z) => ({
-    title: z.string(),
-    description: z.string(),
-    image: z.string(),
-    author: z.string(),
-    authorAvatar: z.string(),
-    date: z.string(),
-    category: z.string(),
-    tags: z.array(z.string()),
-    seo: z.array(z.string()),
-  }),
-  transform: transformMDX,
-});
 
 const metas = defineCollection({
   name: "meta",
@@ -51,8 +32,9 @@ const posts = defineCollection({
     seo: z.array(z.string()),
   }),
   transform: async (document, context) => {
-    const mdx = await compileMDX(context, document, {
-      rehypePlugins: [
+    const transformed = await transformMDX(document, context, {
+      rehypePlugins: (plugins) => [
+        ...plugins,
         rehypeParseCodeBlocks,
         [
           rehypeAutolinkHeadings,
@@ -79,9 +61,8 @@ const posts = defineCollection({
     );
 
     return {
-      ...document,
+      ...transformed,
       headings,
-      mdx,
     };
   },
 });
@@ -113,5 +94,5 @@ const projects = defineCollection({
 });
 
 export default defineConfig({
-  collections: [posts, projects, docs, metas],
+  collections: [posts, projects, metas],
 });

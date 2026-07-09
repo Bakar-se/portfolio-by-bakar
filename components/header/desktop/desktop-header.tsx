@@ -1,3 +1,5 @@
+"use client";
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -18,7 +20,6 @@ import SearchButton from "../shared/search";
 import { ThemeSwitcher } from "../shared/theme-switcher";
 import LogoButton from "./logo";
 import NavigationAbout from "./navigations/about/navigation-about";
-import NavigationBlog from "./navigations/blog/navigation-blog";
 import NavigationProjects from "./navigations/projects/navigation-projects";
 
 interface Props {
@@ -86,7 +87,6 @@ const DesktopHeader: FC<Props> = memo(({ activePath }) => {
               <ErrorBoundary FallbackComponent={NavigationErrorFallback}>
                 <Suspense fallback={<NavigationContentFallback />}>
                   {link.label === "About" && <NavigationAbout />}
-                  {link.label === "Blog" && <NavigationBlog />}
                   {link.label === "Projects" && <NavigationProjects />}
                 </Suspense>
               </ErrorBoundary>

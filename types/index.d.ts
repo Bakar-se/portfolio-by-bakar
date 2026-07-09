@@ -40,7 +40,7 @@ export type MenuItemType = {
 export type PostType = {
   fileName: string;
   content: string;
-  mdx: MDXRemoteSerializeResult;
+  mdx?: MDXRemoteSerializeResult;
   data: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;

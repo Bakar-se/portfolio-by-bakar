@@ -7,7 +7,13 @@ import {
 } from "@/lib/contactEmailTemplates";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
+  return new Resend(apiKey);
+}
 
 /** Must use an address on a domain verified in Resend (e.g. abubakar.com). https://resend.com/domains */
 const resendFrom =
@@ -45,6 +51,8 @@ export async function POST(request: Request) {
 
     const adminHtml = buildAdminNotificationHtml({ name, email, message });
     const adminText = buildAdminNotificationText({ name, email, message });
+
+    const resend = getResend();
 
     const { data: adminData, error: adminError } = await resend.emails.send({
       from: resendFrom,
