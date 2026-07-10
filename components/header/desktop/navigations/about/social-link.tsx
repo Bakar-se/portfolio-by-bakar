@@ -9,6 +9,7 @@ const SocialLink: FC<SocialType> = ({ href, icon: Icon, label }) => (
     target="_blank"
     rel="noopener noreferrer"
     href={href}
+    aria-label={`Visit Bakar on ${label}`}
   >
     <div className="flex items-center justify-between gap-3">
       <div className="border-border bg-background/50 shrink-0 rounded-[10px] border p-1.5">

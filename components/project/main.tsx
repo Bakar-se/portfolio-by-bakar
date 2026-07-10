@@ -127,11 +127,17 @@ const ProjectItem: FC<Props> = ({ project, className }) => {
                   ? project.youtubeUrl || ""
                   : project.webUrl
               }
+              projectTitle={project.title}
             />
           </article>
         </MotionEffect>
         <div className="mt-6 px-8">
-          <Link href={project.webUrl || ""} target="_blank" className="group">
+          <Link
+            href={project.webUrl || ""}
+            target="_blank"
+            className="group"
+            aria-label={`View ${project.title} live demo`}
+          >
             <BrowserWrapper>
               <ProjectImages image={project.image} title={project.title} />
             </BrowserWrapper>

@@ -113,7 +113,7 @@ const Intro = ({ className }: Props) => {
                   href="/projects"
                   className="text-accent-foreground hover:text-accent-foreground/80 font-medium underline underline-offset-4"
                 >
-                  works
+                  selected projects
                 </Link>
                 , and you can view my{" "}
                 <Link
@@ -121,7 +121,7 @@ const Intro = ({ className }: Props) => {
                   className="text-accent-foreground hover:text-accent-foreground/80 font-medium underline underline-offset-4"
                   target="_blank"
                 >
-                  resume here
+                  resume (PDF)
                 </Link>
                 .
               </p>

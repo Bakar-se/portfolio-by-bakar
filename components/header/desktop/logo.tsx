@@ -13,6 +13,7 @@ const LogoButton: FC<Props> = ({ className }) => {
     <Link
       href="/"
       className={cn("group inline-flex items-center gap-2", className)}
+      aria-label="Bakar — go to homepage"
     >
       <Avatar>
         <AvatarImage

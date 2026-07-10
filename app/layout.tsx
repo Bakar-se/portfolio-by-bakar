@@ -8,7 +8,6 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { HeadType } from "@/types";
 import { Analytics } from "@vercel/analytics/next";
-import { RootProvider } from "fumadocs-ui/provider";
 import { Metadata, Viewport } from "next";
 import { Geist as FontSans } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -172,11 +171,7 @@ export default function RootLayout({
               enableSystem={false}
               disableTransitionOnChange
             >
-              {/* Root provider for Fumadocs UI components */}
-              <RootProvider>
-                {/* Main content */}
-                {children}
-              </RootProvider>
+              {children}
               {/* Vercel Analytics for tracking */}
               <Analytics />
               {/* Tailwind CSS breakpoint indicator (development only) */}

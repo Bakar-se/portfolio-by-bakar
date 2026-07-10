@@ -49,14 +49,13 @@ const SingleBlogPost: FC<Props> = ({ post, className }) => {
           loading="lazy"
         />
       </div>
-      <Link href={url} className="group">
-        <span className="absolute inset-0 z-10" aria-hidden="true" />
-        <span className="sr-only">Read more about {title}</span>
-      </Link>
       <div className="bg-background flex flex-1 flex-col justify-between rounded-b-lg p-6">
         <div>
           <h2 className="font-display text-accent-foreground group-hover:text-primary line-clamp-2 text-lg font-bold transition-colors">
-            {title}
+            <Link href={url} className="relative z-10 hover:underline">
+              <span className="absolute inset-0" aria-hidden="true" />
+              {title}
+            </Link>
           </h2>
           <p className="text-foreground mt-2 line-clamp-2 text-sm">
             {description}

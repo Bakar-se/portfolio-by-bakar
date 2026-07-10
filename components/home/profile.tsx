@@ -90,6 +90,7 @@ const Profile: FC<ProfileProps> = memo(({ className }) => {
           alt="Muhammad Abu Bakar's profile picture"
           width={128}
           height={128}
+          fetchPriority="high"
           className="transition-transform duration-300 group-hover:scale-110"
         />
         <AvatarFallback className="bg-accent">

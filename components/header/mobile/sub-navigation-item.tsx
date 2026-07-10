@@ -32,6 +32,7 @@ const SubNavigationItem: FC<Props> = ({
       href={href}
       onClick={onClick}
       aria-disabled={isLoading}
+      aria-label={`${label} — ${description}`}
     >
       <div className="border-border bg-accent/50 flex size-10 items-center justify-center rounded-lg border p-2">
         {icon}

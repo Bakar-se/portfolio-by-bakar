@@ -6,11 +6,12 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getBaseUrl(slug?: string): string {
-  const baseUrl =
+  const baseUrl = (
     process.env.NEXT_PUBLIC_BASE_URL ||
     (process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
-      : "https://bakar.info");
+      : "https://www.bakar.info")
+  ).trim().replace(/\/$/, "");
 
   if (!slug) return baseUrl;
 

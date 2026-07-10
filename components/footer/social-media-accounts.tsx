@@ -18,7 +18,7 @@ const SocialMediaAccounts: FC = () => {
             href={social.href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={social.label}
+            aria-label={`${social.label} — Bakar's profile`}
             className="group text-foreground transition-colors"
           >
             <social.icon className="text-foreground group-hover:text-accent-foreground size-5 transition-colors duration-200" />
