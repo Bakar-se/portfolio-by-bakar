@@ -43,9 +43,53 @@ Copy `.env.example` to `.env.local` and fill in what you need:
 | `RESEND_FROM` | Sender address for contact form messages (optional) |
 | `CONTACT_EMAIL` | Where contact form messages are delivered (optional) |
 
-## Content
+## Writing and publishing
 
 Posts live in `content/posts/` and Projects in `content/projects/`. See `GLOSSARY.md` for what each term means.
+
+Each one is a folder with an `index.md` and its images beside it:
+
+```
+content/
+  posts/
+    my-new-post/
+      index.md
+      cover.jpg
+      step-1.png
+  projects/
+    my-project/
+      index.md
+      cover.png
+```
+
+The folder name is the URL: `content/posts/my-new-post/` is published at `/blog/post/my-new-post`.
+
+### Set up Obsidian (once per machine)
+
+1. In Obsidian, choose **Open folder as vault** and pick the `content/` folder (not the repo root).
+   The vault settings are committed, so pasted images are saved next to the note, links are standard Markdown, and templates come from `content/_templates/`.
+2. Install the **Obsidian Git** community plugin (Settings → Community plugins → Browse), and leave its automatic backup off.
+
+### Write a Post
+
+1. Create a folder in `posts/` named after the URL you want, for example `posts/my-new-post/`.
+2. Inside it, create a note called `index` and run **Templates: Insert template** → `post`.
+3. Fill in the frontmatter and write. Paste screenshots straight in.
+4. Add a cover image to the folder and set `image:` to its file name.
+
+New Posts start with `draft: true`. Drafts show up in `pnpm dev` with a Draft badge and are hidden everywhere on the live site.
+
+### Add a Project
+
+Same steps in `projects/`, using the `project` template. Leave the body empty for a card only. Write a body to give the Project a Case Study page at `/projects/<folder-name>`.
+
+To say a Post is about a Project, add `project: <project-folder-name>` to the Post's frontmatter.
+
+### Publish
+
+1. Set `draft: false`.
+2. In Obsidian, run **Obsidian Git: Commit all changes**, then **Obsidian Git: Push**.
+3. Vercel deploys `main` automatically. If the content has an error (missing frontmatter, a stray `{` or `<` in the text), the deploy fails and the build log names the file.
 
 ## License
 

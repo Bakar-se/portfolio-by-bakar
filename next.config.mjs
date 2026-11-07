@@ -34,6 +34,9 @@ async function buildContent() {
     join(process.cwd(), "content-collections.ts"),
   );
   const errors = [];
+  builder.on("builder:end", ({ stats }) => {
+    console.log(`Content: built ${stats.documents} documents`);
+  });
   builder.on("_error", (event) => {
     const where = event.file?.path ?? event.filePath;
     const message = `${where ? `${where}: ` : ""}${event.error.message}`;
