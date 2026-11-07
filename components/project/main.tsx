@@ -1,4 +1,5 @@
 import Card from "@/components/ui/card";
+import DraftBadge from "@/components/ui/draft-badge";
 import { MDXContent } from "@content-collections/mdx/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -102,6 +103,7 @@ const ProjectItem: FC<Props> = ({ project, className }) => {
           inView
         >
           <article className="z-1 mx-auto mt-4 gap-x-4 px-8 py-4 pb-3 text-center sm:px-10 sm:pb-0">
+            {project.draft && <DraftBadge className="mb-3" />}
             <h2 className="text-accent-foreground text-3xl font-bold tracking-tight text-pretty sm:text-4xl">
               {project.title}
             </h2>

@@ -75,6 +75,20 @@ describe("content asset sync", () => {
     ]);
   });
 
+  it("skips the folder of a Draft unless drafts are included", () => {
+    mkdirSync(join(contentRoot, "posts", "wip"));
+    writeFileSync(
+      join(contentRoot, "posts", "wip", "index.md"),
+      "---\ntitle: WIP\ndraft: true\n---\n\nBody",
+    );
+    writeFileSync(join(contentRoot, "posts", "wip", "shot.png"), "png");
+
+    expect(listAssets(contentRoot)).not.toContain("posts/wip/shot.png");
+    expect(listAssets(contentRoot, { includeDrafts: true })).toContain(
+      "posts/wip/shot.png",
+    );
+  });
+
   it("copies assets and removes ones that no longer exist", () => {
     mkdirSync(join(outDir, "posts", "gone"), { recursive: true });
     writeFileSync(join(outDir, "posts", "gone", "old.png"), "old");

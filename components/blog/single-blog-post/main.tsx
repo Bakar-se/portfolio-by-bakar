@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Card from "@/components/ui/card";
+import DraftBadge from "@/components/ui/draft-badge";
 import { format, parseISO } from "date-fns";
 import { ClockIcon, UserRoundIcon } from "lucide-react";
 import Image from "next/image";
@@ -9,6 +10,7 @@ import readingTime from "reading-time";
 
 interface BlogPost {
   slug: string;
+  draft: boolean;
   title: string;
   description: string;
   image: string;
@@ -49,6 +51,7 @@ const SingleBlogPost: FC<Props> = ({ post, className }) => {
       </div>
       <div className="bg-background flex flex-1 flex-col justify-between rounded-b-lg p-6">
         <div>
+          {post.draft && <DraftBadge className="mb-2" />}
           <h2 className="font-display text-accent-foreground group-hover:text-primary line-clamp-2 text-lg font-bold transition-colors">
             <Link href={url} className="relative z-10 hover:underline">
               <span className="absolute inset-0" aria-hidden="true" />

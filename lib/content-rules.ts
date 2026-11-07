@@ -11,3 +11,11 @@ export function newestFirst<T extends Dated>(items: readonly T[]): T[] {
       a.title.localeCompare(b.title, "en", { sensitivity: "base" }),
   );
 }
+
+/** Drafts live beside published content but only show when asked for. */
+export function visible<T extends { draft: boolean }>(
+  items: readonly T[],
+  { showDrafts }: { showDrafts: boolean },
+): T[] {
+  return items.filter((item) => showDrafts || !item.draft);
+}

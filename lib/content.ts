@@ -1,5 +1,5 @@
-// The one place pages read Posts and Projects from. Ordering (and, later,
-// Draft visibility) is decided here so every page, feed and sitemap agrees.
+// The one place pages read Posts and Projects from. Ordering and Draft
+// visibility are decided here so every page, feed, sitemap and search agrees.
 
 import {
   allPosts,
@@ -7,13 +7,16 @@ import {
   type Post,
   type Project,
 } from "content-collections";
-import { newestFirst } from "./content-rules";
+import { newestFirst, visible } from "./content-rules";
 
 export type { Post, Project };
 
+/** Drafts are shown while running `next dev` and hidden everywhere else. */
+export const showDrafts = process.env.NODE_ENV === "development";
+
 /** Every Post, newest first. */
 export function getPosts(): Post[] {
-  return newestFirst(allPosts);
+  return newestFirst(visible(allPosts, { showDrafts }));
 }
 
 export function getPost(slug: string): Post | undefined {
@@ -22,7 +25,7 @@ export function getPost(slug: string): Post | undefined {
 
 /** Every Project, newest first. */
 export function getProjects(): Project[] {
-  return newestFirst(allProjects);
+  return newestFirst(visible(allProjects, { showDrafts }));
 }
 
 /** Projects shown on the home page and in the projects menu. */

@@ -32,6 +32,18 @@ function locate(collection: "posts" | "projects", meta: ContentMeta) {
   };
 }
 
+/**
+ * Drafts are only shown in `next dev`, so production builds skip compiling
+ * their bodies: an unfinished Draft can't break a deploy, and its images
+ * (which aren't copied to `public/` in production) are never looked up.
+ */
+const compileDrafts =
+  process.argv.slice(2).find((arg) => !arg.startsWith("-")) === "dev";
+
+function bodyToCompile<D extends { draft: boolean; content: string }>(doc: D) {
+  return doc.draft && !compileDrafts ? { ...doc, content: "" } : doc;
+}
+
 /** Name the file in compile errors, so a stray `{` or `<` is easy to find. */
 async function compiling<T>(sourcePath: string, run: () => Promise<T>) {
   try {
@@ -55,12 +67,13 @@ const posts = defineCollection({
     date: z.string(),
     category: z.string(),
     tags: z.array(z.string()),
+    draft: z.boolean().default(false),
   }),
   transform: async (document, context) => {
     const { slug, documentDir, sourcePath } = locate("posts", document._meta);
 
     const transformed = await compiling(sourcePath, () =>
-      transformMDX(document, context, {
+      transformMDX(bodyToCompile(document), context, {
         remarkPlugins: (plugins) => [
           [remarkContentAssets, { documentDir }],
           ...plugins,
@@ -112,6 +125,7 @@ const projects = defineCollection({
     date: z.string(),
     image: z.string(),
     featured: z.boolean(),
+    draft: z.boolean().default(false),
     webUrl: z.string().nullable(),
     youtubeUrl: z.string().nullable(),
     githubUrl: z.string().nullable(),
@@ -123,7 +137,7 @@ const projects = defineCollection({
     );
 
     const mdx = await compiling(sourcePath, () =>
-      compileMDX(context, document, {
+      compileMDX(context, bodyToCompile(document), {
         remarkPlugins: [[remarkContentAssets, { documentDir }]],
         rehypePlugins: [rehypeParseCodeBlocks],
       }),

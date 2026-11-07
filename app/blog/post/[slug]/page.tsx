@@ -90,6 +90,7 @@ export default async function BlogPost({ params }: Props) {
             category={post.data.category}
             readTime={readMinutes}
             imageUrl={post.data.image}
+            draft={rawPost.draft}
           />
         </MotionEffect>
       </Heading>

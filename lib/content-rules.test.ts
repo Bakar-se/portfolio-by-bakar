@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { newestFirst } from "./content-rules";
+import { newestFirst, visible } from "./content-rules";
 
 describe("newestFirst", () => {
   it("orders by date, newest first", () => {
@@ -30,5 +30,22 @@ describe("newestFirst", () => {
     ];
     newestFirst(items);
     expect(items[0]!.title).toBe("A");
+  });
+});
+
+describe("visible", () => {
+  const items = [
+    { title: "Live", draft: false },
+    { title: "WIP", draft: true },
+  ];
+
+  it("hides Drafts when drafts are not shown", () => {
+    expect(visible(items, { showDrafts: false }).map((i) => i.title)).toEqual([
+      "Live",
+    ]);
+  });
+
+  it("keeps Drafts when drafts are shown", () => {
+    expect(visible(items, { showDrafts: true })).toHaveLength(2);
   });
 });

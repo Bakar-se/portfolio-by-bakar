@@ -1,3 +1,4 @@
+import DraftBadge from "@/components/ui/draft-badge";
 import { MotionEffect } from "@/components/ui/animations/motion-effect";
 import { Separator } from "@radix-ui/react-separator";
 import Image from "next/image";
@@ -15,6 +16,7 @@ interface Props {
   category: string;
   readTime: number;
   imageUrl: string;
+  draft?: boolean;
 }
 
 const BlogPostDetailHeading: FC<Props> = ({
@@ -26,6 +28,7 @@ const BlogPostDetailHeading: FC<Props> = ({
   category,
   readTime,
   imageUrl,
+  draft = false,
 }) => {
   return (
     <div className="mx-auto w-full max-w-5xl px-6 py-10 sm:px-4 md:px-0">
@@ -40,6 +43,7 @@ const BlogPostDetailHeading: FC<Props> = ({
       >
         <div className="mx-auto flex w-full max-w-3xl items-center space-x-4">
           <BackButton />
+          {draft && <DraftBadge />}
         </div>
 
         <h1 className="font-display text-accent-foreground mx-auto mt-4 mb-4 w-full max-w-3xl text-left text-4xl font-medium text-ellipsis sm:mb-0 sm:text-4xl sm:leading-[1.25]">
