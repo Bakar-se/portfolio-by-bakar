@@ -1,57 +1,49 @@
-import { truncateDescription, truncateTitle } from "@/lib/seo";
 import type { HeadType } from "@/types";
 
+/**
+ * Title and description for each top-level page. Titles are short: the root
+ * layout's title template adds " · Bakar" (see lib/metadata.ts).
+ */
 const HEAD: HeadType[] = [
   {
     page: "Home",
-    title: truncateTitle("Looking for the Best Software Engineer? | Hire Bakar"),
-    description: truncateDescription(
-      "Hire Bakar – A Skilled Software Engineer for Fast, Reliable, and High-Performing Web Applications!",
-    ),
+    title: "Muhammad Abu Bakar · Software Engineer",
+    description:
+      "I'm Muhammad Abu Bakar, a software engineer. I write about what I'm learning and share the projects I've built.",
     slug: "/",
   },
   {
     page: "About",
-    title: truncateTitle("About | Software Engineer for Hire | Bakar"),
-    description: truncateDescription(
-      "Looking for a top Software Engineer? Hire Bakar.",
-    ),
+    title: "About",
+    description:
+      "Who I am, what I've worked on, and the tools I like to build with.",
     slug: "/about",
   },
   {
-    page: "Story",
-    title: truncateTitle("Story | Software Engineer for Hire | Bakar"),
-    description: truncateDescription(
-      "Learn more about Bakar's journey and experiences as a software engineer.",
-    ),
-    slug: "/story",
-  },
-  {
     page: "Blog",
-    title: truncateTitle("Blog | Next.js, Tailwind CSS, and Supabase | Bakar"),
-    description: truncateDescription("Explore Bakar's latest blog posts"),
+    title: "Blog",
+    description:
+      "Posts on Next.js, React, Tailwind CSS and whatever else I'm learning as a software engineer.",
     slug: "/blog",
   },
   {
     page: "Projects",
-    title: truncateTitle("Projects | Showcasing Bakar's Work | Bakar"),
-    description: truncateDescription("Next.js, Tailwind CSS, and Supabase!"),
+    title: "Projects",
+    description: "Things I've built, and the stack behind each one.",
     slug: "/projects",
   },
   {
     page: "Shoutouts",
-    title: truncateTitle("Shoutouts | Feature your post here"),
-    description: truncateDescription(
-      "Give me a shoutout, and I'll feature your post here!",
-    ),
+    title: "Shoutouts",
+    description:
+      "Posts people have shared about my work. Give me a shoutout and I'll feature yours here.",
     slug: "/shoutouts",
   },
   {
     page: "Contact",
-    title: truncateTitle("Contact | Get in Touch with Bakar"),
-    description: truncateDescription(
-      "Thinking about hiring Bakar? Drop him a message.",
-    ),
+    title: "Contact",
+    description:
+      "Questions, work, or just saying hi: send me a message and I'll get back to you.",
     slug: "/contact",
   },
 ];
