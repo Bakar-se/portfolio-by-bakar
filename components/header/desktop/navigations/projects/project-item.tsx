@@ -13,13 +13,14 @@ interface Props {
 const ProjectItem: FC<Props> = ({ title, description, href, image }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const isExternal = /^https?:\/\//.test(href);
 
   return (
     <Link
       key={title}
       className="group border-border bg-accent/50 hover:bg-accent relative flex flex-col overflow-hidden rounded-xl border mask-r-from-30% transition-all duration-300 hover:mask-r-from-60% hover:shadow-sm"
-      target={href !== "/projects" ? "_blank" : undefined}
-      rel={href !== "/projects" ? "noopener noreferrer" : undefined}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
       href={href}
       aria-label={`View ${title} project`}
     >

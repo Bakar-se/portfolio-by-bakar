@@ -1,25 +1,32 @@
+// Structured data (schema.org JSON-LD) so search engines understand who the
+// site belongs to and what each Post is.
+
 import AUTHOR from "@/config/seo/author";
+import socialConfig from "@/config/social";
 import { getBaseUrl } from "@/lib/utils";
+import { lastUpdated } from "./content-rules";
+import { SITE } from "./metadata";
 import type { PostSeoData } from "./post-seo";
 
-export function articleJsonLd(post: PostSeoData, slug: string) {
+function absolute(url: string) {
+  return /^https?:\/\//.test(url) ? url : getBaseUrl(url);
+}
+
+export function blogPostingJsonLd(post: PostSeoData, slug: string) {
   const url = getBaseUrl(`/blog/post/${slug}`);
-  const image = post.image?.startsWith("http")
-    ? post.image
-    : getBaseUrl(post.image ?? "/images/opengraph-image.png");
 
   return {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
-    image: [image, getBaseUrl(`/og/${slug}`)],
+    image: absolute(post.image ?? AUTHOR.avatar),
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: lastUpdated(post),
     author: {
       "@type": "Person",
       name: post.author,
-      url: AUTHOR.twitterUrl,
+      url: getBaseUrl(),
     },
     publisher: {
       "@type": "Person",
@@ -37,13 +44,19 @@ export function articleJsonLd(post: PostSeoData, slug: string) {
 }
 
 export function personJsonLd() {
+  const profiles = socialConfig
+    .map((social) => social.href)
+    .filter((href) => href.startsWith("http"));
+
   return {
     "@context": "https://schema.org",
     "@type": "Person",
     name: AUTHOR.name,
     url: getBaseUrl(),
-    sameAs: [AUTHOR.twitterUrl, "https://www.linkedin.com/in/its-bakar/"],
+    image: getBaseUrl(AUTHOR.avatar),
+    sameAs: [...new Set([...profiles, AUTHOR.twitterUrl])],
+    // Kept on purpose so people can reach out.
     email: AUTHOR.email,
-    jobTitle: "Software Engineer",
+    jobTitle: SITE.headline,
   };
 }

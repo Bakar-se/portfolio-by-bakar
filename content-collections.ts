@@ -1,20 +1,60 @@
+import AUTHOR from "@/config/seo/author";
+import { remarkContentAssets, resolveAssetUrl } from "@/lib/content-assets.mjs";
+import { hasCaseStudy } from "@/lib/content-rules";
+import { remarkDemoteH1 } from "@/lib/remark-demote-h1";
 import { slugify } from "@/lib/utils";
 import { defineCollection, defineConfig } from "@content-collections/core";
 import { compileMDX } from "@content-collections/mdx";
-import {
-  createMetaSchema,
-  transformMDX,
-} from "@fumadocs/content-collections/configuration";
+import { transformMDX } from "@fumadocs/content-collections/configuration";
+import { posix } from "node:path";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { rehypeParseCodeBlocks } from "./shiki-rehype.mjs";
 
-const metas = defineCollection({
-  name: "meta",
-  directory: "content/docs",
-  include: "**/meta.json",
-  parser: "json",
-  schema: createMetaSchema,
-});
+type ContentMeta = {
+  directory: string;
+  fileName: string;
+  filePath: string;
+  path: string;
+};
+
+/**
+ * Where a document lives and what it is called on the site. A document is
+ * either `<slug>/index.md` (with its images beside it) or a bare `<slug>.md`.
+ */
+function locate(collection: "posts" | "projects", meta: ContentMeta) {
+  // content-collections reports native separators; the site needs `/`.
+  const toPosix = (path: string) => path.replace(/\\/g, "/");
+  const isIndex = /^index\.mdx?$/.test(meta.fileName);
+  const slug = toPosix(isIndex ? meta.directory : meta.path);
+  const documentDir = posix.join(collection, toPosix(meta.directory));
+  return {
+    slug,
+    documentDir,
+    sourcePath: `content/${collection}/${toPosix(meta.filePath)}`,
+  };
+}
+
+/**
+ * Drafts are only shown in `next dev`, so production builds skip compiling
+ * their bodies: an unfinished Draft can't break a deploy, and its images
+ * (which aren't copied to `public/` in production) are never looked up.
+ */
+const compileDrafts =
+  process.argv.slice(2).find((arg) => !arg.startsWith("-")) === "dev";
+
+function bodyToCompile<D extends { draft: boolean; content: string }>(doc: D) {
+  return doc.draft && !compileDrafts ? { ...doc, content: "" } : doc;
+}
+
+/** Name the file in compile errors, so a stray `{` or `<` is easy to find. */
+async function compiling<T>(sourcePath: string, run: () => Promise<T>) {
+  try {
+    return await run();
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to compile ${sourcePath}: ${reason}`);
+  }
+}
 
 const posts = defineCollection({
   name: "posts",
@@ -24,28 +64,52 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     image: z.string(),
-    author: z.string(),
-    authorAvatar: z.string(),
+    author: z.string().default(AUTHOR.name),
+    authorAvatar: z.string().default(AUTHOR.avatar),
     date: z.string(),
+    /** When the Post last changed meaningfully, if after `date`. */
+    updated: z.string().optional(),
     category: z.string(),
     tags: z.array(z.string()),
-    seo: z.array(z.string()),
+    draft: z.boolean().default(false),
+    /** The slug of the Project this Post is about, if any. */
+    project: z.string().optional(),
   }),
   transform: async (document, context) => {
-    const transformed = await transformMDX(document, context, {
-      rehypePlugins: (plugins) => [
-        ...plugins,
-        rehypeParseCodeBlocks,
-        [
-          rehypeAutolinkHeadings,
-          {
-            properties: {
-              className: ["anchor"],
-            },
-          },
+    const { slug, documentDir, sourcePath } = locate("posts", document._meta);
+
+    if (document.project) {
+      const projectSlugs = context
+        .documents(projects)
+        .map((project) => locate("projects", project._meta).slug);
+      if (!projectSlugs.includes(document.project)) {
+        throw new Error(
+          `${sourcePath} says it is about project "${document.project}", but there is no such Project. Known projects: ${projectSlugs.join(", ")}`,
+        );
+      }
+    }
+
+    const transformed = await compiling(sourcePath, () =>
+      transformMDX(bodyToCompile(document), context, {
+        remarkPlugins: (plugins) => [
+          [remarkContentAssets, { documentDir }],
+          remarkDemoteH1,
+          ...plugins,
         ],
-      ],
-    });
+        rehypePlugins: (plugins) => [
+          ...plugins,
+          rehypeParseCodeBlocks,
+          [
+            rehypeAutolinkHeadings,
+            {
+              properties: {
+                className: ["anchor"],
+              },
+            },
+          ],
+        ],
+      }),
+    );
 
     const regXHeader = /^(?:[\n\r]|)(?<flag>#{1,6})\s+(?<content>.+)/gm;
     const headings = Array.from(document.content.matchAll(regXHeader)).map(
@@ -62,6 +126,10 @@ const posts = defineCollection({
 
     return {
       ...transformed,
+      slug,
+      /** The folder relative to `content/`, for resolving the Post's images. */
+      documentDir,
+      image: resolveAssetUrl(document.image, documentDir),
       headings,
     };
   },
@@ -72,27 +140,41 @@ const projects = defineCollection({
   directory: "content/projects",
   include: ["**/*.md", "**/*.mdx"],
   schema: (z) => ({
-    order: z.number(),
     title: z.string(),
-    category: z.string(),
-    created_at: z.string(),
+    /** One sentence for the Case Study page, meta description and Share Card. */
+    description: z.string().optional(),
+    stack: z.array(z.string()),
+    date: z.string(),
     image: z.string(),
     featured: z.boolean(),
+    draft: z.boolean().default(false),
     webUrl: z.string().nullable(),
     youtubeUrl: z.string().nullable(),
     githubUrl: z.string().nullable(),
   }),
   transform: async (document, context) => {
-    const mdx = await compileMDX(context, document, {
-      rehypePlugins: [rehypeParseCodeBlocks],
-    });
+    const { slug, documentDir, sourcePath } = locate(
+      "projects",
+      document._meta,
+    );
+
+    const mdx = await compiling(sourcePath, () =>
+      compileMDX(context, bodyToCompile(document), {
+        remarkPlugins: [[remarkContentAssets, { documentDir }]],
+        rehypePlugins: [rehypeParseCodeBlocks],
+      }),
+    );
+
     return {
       ...document,
+      slug,
+      image: resolveAssetUrl(document.image, documentDir),
       mdx,
+      hasCaseStudy: hasCaseStudy(document),
     };
   },
 });
 
 export default defineConfig({
-  collections: [posts, projects, metas],
+  collections: [posts, projects],
 });

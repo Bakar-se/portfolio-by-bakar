@@ -6,34 +6,18 @@ import Heading from "@/components/heading/main";
 import { MotionEffect } from "@/components/ui/animations/motion-effect";
 import MainTitle from "@/components/ui/main-title";
 import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
-import { HEAD } from "@/config/seo";
-import { getBaseUrl } from "@/lib/utils";
-import { HeadType } from "@/types";
-import { allPosts } from "content-collections";
+import { getPageHead, pageMetadata } from "@/lib/metadata";
+import { getPosts } from "@/lib/content";
 import { Metadata } from "next";
 import { Fragment, Suspense } from "react";
 
-if (!HEAD || HEAD.length === 0) {
-  console.error("⚠️ HEAD configuration is missing or empty");
-}
-
 const PAGE = "Blog";
-const page = HEAD.find((page: HeadType) => page.page === PAGE) as HeadType;
+const page = getPageHead(PAGE);
 
-export const metadata: Metadata = {
-  title: page.title,
-  applicationName: page.title,
-  description: page.description,
-  metadataBase: new URL(getBaseUrl(page.slug)),
-  alternates: {
-    canonical: getBaseUrl(page.slug),
-  },
-};
+export const metadata: Metadata = pageMetadata(PAGE);
 
 export default async function BlogPage() {
-  const posts = allPosts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const posts = getPosts();
 
   return (
     <Fragment>
@@ -59,7 +43,7 @@ export default async function BlogPage() {
         <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-4 px-3 py-10 md:grid-cols-3 lg:px-4 xl:px-0">
           {posts?.map((post, index) => (
             <MotionEffect
-              key={post._meta.path}
+              key={post.slug}
               fade
               zoom
               inView

@@ -7,13 +7,19 @@ import Heading from "@/components/heading/main";
 import { JsonLd } from "@/components/json-ld";
 import { MotionEffect } from "@/components/ui/animations/motion-effect";
 import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
-import { articleJsonLd } from "@/lib/json-ld";
+import {
+  getPost,
+  getProject,
+  getProjectHref,
+  type Post,
+} from "@/lib/content";
+import { blogPostingJsonLd } from "@/lib/json-ld";
 import { buildPostMetadata, type PostSeoData } from "@/lib/post-seo";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 import { MDXContent } from "@content-collections/mdx/react";
-import { allPosts } from "content-collections";
 import { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import readingTime from "reading-time";
@@ -24,22 +30,14 @@ interface Props {
   }>;
 }
 
-function getRawPost(slug: string) {
-  return allPosts.find(
-    (post) => post._meta.path.replace(/\.mdx?$/, "") === slug,
-  );
-}
-
-function toPostSeoData(
-  post: NonNullable<ReturnType<typeof getRawPost>>,
-): PostSeoData {
+function toPostSeoData(post: Post): PostSeoData {
   return {
     title: post.title,
     description: post.description,
     date: post.date,
+    updated: post.updated,
     category: post.category,
     tags: post.tags,
-    seo: post.seo,
     image: post.image,
     author: post.author,
   };
@@ -56,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = source.getPage([slug]);
   if (!post) notFound();
 
-  const rawPost = getRawPost(slug);
+  const rawPost = getPost(slug);
   if (!rawPost) notFound();
 
   return buildPostMetadata(toPostSeoData(rawPost), slug);
@@ -65,20 +63,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPost({ params }: Props) {
   const { slug } = await params;
   const post = source.getPage([slug]);
-  const rawPost = getRawPost(slug);
+  const rawPost = getPost(slug);
 
   if (!post || !rawPost) {
     return notFound();
   }
 
   const seoData = toPostSeoData(rawPost);
+  const project = rawPost.project ? getProject(rawPost.project) : undefined;
   const readMinutes = readingTime(rawPost.content, {
     wordsPerMinute: 100,
   }).minutes;
 
   return (
     <Fragment>
-      <JsonLd data={articleJsonLd(seoData, slug)} />
+      <JsonLd data={blogPostingJsonLd(seoData, slug)} />
       <Header showProgressBar={true} />
       <Heading variant="blog">
         <MotionEffect
@@ -99,11 +98,24 @@ export default async function BlogPost({ params }: Props) {
             category={post.data.category}
             readTime={readMinutes}
             imageUrl={post.data.image}
+            draft={rawPost.draft}
           />
         </MotionEffect>
       </Heading>
       <div className="border-border bg-background relative border-t">
         <div className="mx-auto w-full max-w-5xl">
+          {project && (
+            <p className="text-muted-foreground mx-auto max-w-3xl px-6 pt-8 text-sm sm:px-4 md:px-0">
+              This post is about{" "}
+              <Link
+                href={getProjectHref(project)}
+                className="text-accent-foreground font-medium underline underline-offset-4"
+              >
+                {project.title}
+              </Link>
+              .
+            </p>
+          )}
           <MotionEffect
             fade
             blur="10px"

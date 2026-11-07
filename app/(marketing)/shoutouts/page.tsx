@@ -5,9 +5,7 @@ import { TweetErrorFallback } from "@/components/shoutouts/tweet-error-fallback"
 import { MotionEffect } from "@/components/ui/animations/motion-effect";
 import { Button } from "@/components/ui/button";
 import MainTitle from "@/components/ui/main-title";
-import { HEAD } from "@/config/seo";
-import { getBaseUrl } from "@/lib/utils";
-import { HeadType } from "@/types";
+import { getPageHead, pageMetadata } from "@/lib/metadata";
 import { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import Link from "next/link";
@@ -45,23 +43,10 @@ const TweetPage = async ({ id }: { id: string }) => {
   return <EmbeddedTweet tweet={tweet} />;
 };
 
-// Validate SEO configuration
-if (!HEAD || HEAD.length === 0) {
-  console.error("⚠️ HEAD configuration is missing or empty");
-}
-
 const PAGE = "Shoutouts";
-const page = HEAD.find((page: HeadType) => page.page === PAGE) as HeadType;
+const page = getPageHead(PAGE);
 
-export const metadata: Metadata = {
-  title: page.title,
-  applicationName: page.title,
-  description: page.description,
-  metadataBase: new URL(getBaseUrl(page.slug)),
-  alternates: {
-    canonical: getBaseUrl(page.slug),
-  },
-};
+export const metadata: Metadata = pageMetadata(PAGE);
 
 // Predefined tweet IDs for better maintainability
 const TWEET_IDS = [

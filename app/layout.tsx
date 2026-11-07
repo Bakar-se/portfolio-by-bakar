@@ -1,40 +1,19 @@
 import TailwindIndicator from "@/components/ui/tailwind-indicator";
 import { JsonLd } from "@/components/json-ld";
-import { AUTHOR, FAVICONS, HEAD, KEYWORDS, OPEN_GRAPH } from "@/config/seo";
+import { AUTHOR } from "@/config/seo";
 import { personJsonLd } from "@/lib/json-ld";
+import { getPageHead, SITE, TITLE_TEMPLATE } from "@/lib/metadata";
 import { cn, getBaseUrl } from "@/lib/utils";
 import "@/styles/tailwind.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { HeadType } from "@/types";
 import { Analytics } from "@vercel/analytics/next";
 import { Metadata, Viewport } from "next";
 import { Geist as FontSans } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-// Validate SEO configuration to ensure all required fields are present
-// This helps catch missing or incomplete SEO setup early
-if (!HEAD || HEAD.length === 0) {
-  console.error("⚠️ HEAD configuration is missing or empty");
-}
-if (!KEYWORDS || KEYWORDS.length === 0) {
-  console.warn("🔍 No keywords defined for SEO");
-}
-if (!AUTHOR || !AUTHOR.name) {
-  console.error("❌ Author information is missing");
-}
-if (!FAVICONS || !FAVICONS.icon || FAVICONS.icon.length === 0) {
-  console.warn("🖼️ No favicons configured");
-}
-if (!OPEN_GRAPH || !OPEN_GRAPH.image || !OPEN_GRAPH.twitterImage) {
-  console.error("📱 OpenGraph configuration is incomplete");
-}
-
-// Define the current page for SEO configuration
-const PAGE = "Home";
-
-// Get SEO configuration for the current page from the HEAD array
-const page = HEAD.find((page: HeadType) => page.page === PAGE) as HeadType;
+// The home page uses the root layout's metadata as-is.
+const page = getPageHead("Home");
 
 // Configure the Geist font with Latin subset and variable font support
 // This sets up the primary font for the application
@@ -55,13 +34,13 @@ export const viewport: Viewport = {
 // Configure comprehensive metadata for SEO and social sharing
 // This includes all necessary meta tags for search engines and social media platforms
 export const metadata: Metadata = {
-  // Basic metadata
-  title: page.title,
-  generator: AUTHOR.name,
-  applicationName: page.title,
+  // Basic metadata. Other pages set a short title, e.g. "Blog · Bakar".
+  title: {
+    default: page.title,
+    template: TITLE_TEMPLATE,
+  },
   description: page.description,
   referrer: "origin-when-cross-origin",
-  keywords: (KEYWORDS ?? []).join(", "),
 
   // Author information for content attribution
   authors: [
@@ -81,15 +60,11 @@ export const metadata: Metadata = {
       "application/rss+xml": `${getBaseUrl("/rss.xml")}`,
       "application/atom+xml": `${getBaseUrl("/feed.xml")}`,
     },
-    languages: {
-      "en-US": getBaseUrl(),
-      "x-default": getBaseUrl(),
-    },
   },
 
   // Apple web app configuration for iOS devices
   appleWebApp: {
-    title: page.title,
+    title: SITE.shortName,
     statusBarStyle: "default",
     capable: true,
   },
@@ -100,45 +75,22 @@ export const metadata: Metadata = {
     follow: true,
   },
 
-  // Favicon configuration for browser tabs and bookmarks
-  icons: FAVICONS,
-
-  // OpenGraph metadata for social media sharing
-  // This enables rich previews when the site is shared on social platforms
+  // Share Card for the home page. Its image comes from app/opengraph-image.tsx;
+  // other pages set their own title, description and URL (see lib/metadata.ts).
   openGraph: {
     type: "website",
     locale: "en",
     url: getBaseUrl(),
     title: page.title,
     description: page.description,
-    siteName: page.title,
-    images: [
-      {
-        url: OPEN_GRAPH.image,
-        width: 1200,
-        height: 630,
-        alt: page.title,
-        type: "image/png",
-      },
-    ],
+    siteName: SITE.name,
   },
 
-  // Twitter card metadata for Twitter sharing
-  // This enables rich previews when the site is shared on Twitter
   twitter: {
     card: "summary_large_image",
     title: page.title,
     description: page.description,
     site: AUTHOR.twitterAddress,
-    images: [
-      {
-        url: OPEN_GRAPH.twitterImage,
-        width: 1200,
-        height: 675,
-        alt: page.title,
-        type: "image/png",
-      },
-    ],
     creator: AUTHOR.twitterAddress,
   },
 };

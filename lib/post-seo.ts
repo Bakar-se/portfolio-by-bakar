@@ -1,21 +1,19 @@
 import AUTHOR from "@/config/seo/author";
 import { getBaseUrl } from "@/lib/utils";
 import type { Metadata } from "next";
+import { lastUpdated } from "./content-rules";
+import { SITE } from "./metadata";
 import { truncateDescription } from "./seo";
 
 export interface PostSeoData {
   title: string;
   description: string;
   date: string;
+  updated?: string;
   category: string;
   tags: string[];
-  seo?: string[];
   image?: string;
   author: string;
-}
-
-export function getPostOgImageUrl(slug: string): string {
-  return getBaseUrl(`/og/${slug}`);
 }
 
 export function getPostCanonicalUrl(slug: string): string {
@@ -23,7 +21,6 @@ export function getPostCanonicalUrl(slug: string): string {
 }
 
 export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
-  const ogImageUrl = getPostOgImageUrl(slug);
   const canonical = getPostCanonicalUrl(slug);
   const ogDescription = truncateDescription(post.description, 200);
 
@@ -31,7 +28,6 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
     metadataBase: new URL(getBaseUrl()),
     title: post.title,
     description: post.description,
-    keywords: post.seo?.join(", ") ?? post.tags.join(", "),
     authors: [{ name: post.author, url: AUTHOR.twitterUrl }],
     alternates: {
       canonical,
@@ -46,21 +42,12 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
       url: canonical,
       title: post.title,
       description: ogDescription,
-      siteName: "bakar.info",
+      siteName: SITE.name,
       publishedTime: post.date,
-      modifiedTime: post.date,
+      modifiedTime: lastUpdated(post),
       authors: [post.author],
       section: post.category,
       tags: post.tags,
-      images: [
-        {
-          url: ogImageUrl,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-          type: "image/png",
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
@@ -68,7 +55,6 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
       description: ogDescription,
       site: AUTHOR.twitterAddress,
       creator: AUTHOR.twitterAddress,
-      images: [ogImageUrl],
     },
   };
 }

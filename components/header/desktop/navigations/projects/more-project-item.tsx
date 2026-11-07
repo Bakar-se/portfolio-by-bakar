@@ -1,27 +1,28 @@
+import { FolderIcon } from "lucide-react";
 import Link from "next/link";
 import React, { FC } from "react";
-import { IconType } from "react-icons";
 import AnimatedArrow from "../animated-arrow";
 
 interface Props {
   title: string;
   href: string;
-  icon: IconType;
+  icon?: React.ComponentType<{ className?: string }>;
   description?: string;
 }
 
 const MoreProjectItem: FC<Props> = ({
   title,
   href,
-  icon: Icon,
+  icon: Icon = FolderIcon,
   description,
 }) => {
+  const isExternal = /^https?:\/\//.test(href);
+
   return (
     <Link
-      key={title}
       className="group bg-background hover:bg-accent -mx-2 rounded-[8px] mask-r-from-80% p-2 transition-all duration-200 hover:shadow-sm"
-      target="_blank"
-      rel="noopener noreferrer"
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
       href={href}
       aria-label={description ? `${title} - ${description}` : title}
     >

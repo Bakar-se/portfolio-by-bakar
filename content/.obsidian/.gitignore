@@ -1,0 +1,7 @@
+# Per-device state: which files are open, window layout, caches.
+workspace.json
+workspace-mobile.json
+cache
+# Community plugins are installed per machine (see README).
+plugins/
+community-plugins.json

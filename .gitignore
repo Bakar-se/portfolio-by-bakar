@@ -41,3 +41,7 @@ next-env.d.ts
 
 # Documentation
 /docs
+
+.agents/*
+# Images copied from content/ at build time (see lib/content-assets.mjs)
+/public/content-assets
