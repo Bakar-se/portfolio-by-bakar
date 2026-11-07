@@ -32,3 +32,8 @@ export function postsAbout<T extends { project?: string }>(
 ): T[] {
   return posts.filter((post) => post.project === projectSlug);
 }
+
+/** When a Post last changed: its `updated` date, or when it was published. */
+export function lastUpdated(post: { date: string; updated?: string }): string {
+  return post.updated ?? post.date;
+}

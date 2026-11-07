@@ -4,6 +4,7 @@
 import AUTHOR from "@/config/seo/author";
 import socialConfig from "@/config/social";
 import { getBaseUrl } from "@/lib/utils";
+import { lastUpdated } from "./content-rules";
 import { SITE } from "./metadata";
 import type { PostSeoData } from "./post-seo";
 
@@ -21,7 +22,7 @@ export function blogPostingJsonLd(post: PostSeoData, slug: string) {
     description: post.description,
     image: absolute(post.image ?? AUTHOR.avatar),
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: lastUpdated(post),
     author: {
       "@type": "Person",
       name: post.author,

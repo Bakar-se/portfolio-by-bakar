@@ -1,6 +1,7 @@
 import AUTHOR from "@/config/seo/author";
 import { getBaseUrl } from "@/lib/utils";
 import type { Metadata } from "next";
+import { lastUpdated } from "./content-rules";
 import { SITE } from "./metadata";
 import { truncateDescription } from "./seo";
 
@@ -8,6 +9,7 @@ export interface PostSeoData {
   title: string;
   description: string;
   date: string;
+  updated?: string;
   category: string;
   tags: string[];
   image?: string;
@@ -42,7 +44,7 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
       description: ogDescription,
       siteName: SITE.name,
       publishedTime: post.date,
-      modifiedTime: post.date,
+      modifiedTime: lastUpdated(post),
       authors: [post.author],
       section: post.category,
       tags: post.tags,

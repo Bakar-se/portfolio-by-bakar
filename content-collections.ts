@@ -1,6 +1,7 @@
 import AUTHOR from "@/config/seo/author";
 import { remarkContentAssets, resolveAssetUrl } from "@/lib/content-assets.mjs";
 import { hasCaseStudy } from "@/lib/content-rules";
+import { remarkDemoteH1 } from "@/lib/remark-demote-h1";
 import { slugify } from "@/lib/utils";
 import { defineCollection, defineConfig } from "@content-collections/core";
 import { compileMDX } from "@content-collections/mdx";
@@ -66,6 +67,8 @@ const posts = defineCollection({
     author: z.string().default(AUTHOR.name),
     authorAvatar: z.string().default(AUTHOR.avatar),
     date: z.string(),
+    /** When the Post last changed meaningfully, if after `date`. */
+    updated: z.string().optional(),
     category: z.string(),
     tags: z.array(z.string()),
     draft: z.boolean().default(false),
@@ -90,6 +93,7 @@ const posts = defineCollection({
       transformMDX(bodyToCompile(document), context, {
         remarkPlugins: (plugins) => [
           [remarkContentAssets, { documentDir }],
+          remarkDemoteH1,
           ...plugins,
         ],
         rehypePlugins: (plugins) => [

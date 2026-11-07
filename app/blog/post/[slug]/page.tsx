@@ -35,6 +35,7 @@ function toPostSeoData(post: Post): PostSeoData {
     title: post.title,
     description: post.description,
     date: post.date,
+    updated: post.updated,
     category: post.category,
     tags: post.tags,
     image: post.image,

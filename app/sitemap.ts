@@ -1,4 +1,5 @@
 import { getCaseStudies, getPosts } from "@/lib/content";
+import { lastUpdated } from "@/lib/content-rules";
 import { getBaseUrl } from "@/lib/utils";
 import type { MetadataRoute } from "next";
 
@@ -12,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const posts = getPosts().map((post) => ({
     url: getBaseUrl(`/blog/post/${post.slug}`),
-    lastModified: new Date(post.date),
+    lastModified: new Date(lastUpdated(post)),
   }));
 
   const caseStudies = getCaseStudies().map((project) => ({

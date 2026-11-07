@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   hasCaseStudy,
+  lastUpdated,
   newestFirst,
   postsAbout,
   visible,
@@ -78,5 +79,17 @@ describe("postsAbout", () => {
       "A",
       "D",
     ]);
+  });
+});
+
+describe("lastUpdated", () => {
+  it("is the updated date when there is one", () => {
+    expect(lastUpdated({ date: "2025-01-01", updated: "2025-06-01" })).toBe(
+      "2025-06-01",
+    );
+  });
+
+  it("falls back to the publish date", () => {
+    expect(lastUpdated({ date: "2025-01-01" })).toBe("2025-01-01");
   });
 });

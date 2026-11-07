@@ -7,8 +7,6 @@ category: "Tailwind CSS"
 tags: ["Tailwind CSS", "Next.js", "PostCSS", "Upgrade TailwindCSS"]
 ---
 
-# How to Update Tailwind CSS to v4 in Next.js 15 App Router
-
 Tailwind CSS just dropped version 4, and if you're using Next.js 15 with the App Router, you might be wondering how to upgrade smoothly. Don't worry—I've got you covered. Let's walk through the update step by step.
 
 ## Why Upgrade to Tailwind CSS v4?

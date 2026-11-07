@@ -77,6 +77,8 @@ The folder name is the URL: `content/posts/my-new-post/` is published at `/blog/
 3. Fill in the frontmatter and write. Paste screenshots straight in.
 4. Add a cover image to the folder and set `image:` to its file name.
 
+Don't start the body with `# Title`: the page already shows the title as its heading (a `#` heading in the body is turned into `##`). If you substantially revise a published Post later, add `updated: "YYYY-MM-DD"` so search engines see the change.
+
 New Posts start with `draft: true`. Drafts show up in `pnpm dev` with a Draft badge and are hidden everywhere on the live site.
 
 ### Add a Project
