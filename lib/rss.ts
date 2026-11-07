@@ -1,51 +1,30 @@
 import AUTHOR from "@/config/seo/author";
-import { getBaseUrl } from "@/lib/utils";
 import { getPosts } from "@/lib/content";
+import { getBaseUrl } from "@/lib/utils";
 import { Feed } from "feed";
+import { lastUpdated } from "./content-rules";
+import { markdownToFeedHtml } from "./feed-html";
+import { SITE } from "./metadata";
 
-function markdownToHtml(content: string): string {
-  const escaped = content
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  return escaped
-    .split(/\n\n+/)
-    .map((block) => {
-      const trimmed = block.trim();
-      if (!trimmed) return "";
-      if (trimmed.startsWith("# ")) {
-        return `<h1>${trimmed.slice(2)}</h1>`;
-      }
-      if (trimmed.startsWith("## ")) {
-        return `<h2>${trimmed.slice(3)}</h2>`;
-      }
-      if (trimmed.startsWith("### ")) {
-        return `<h3>${trimmed.slice(4)}</h3>`;
-      }
-      if (trimmed.startsWith("```")) {
-        const code = trimmed.replace(/^```[^\n]*\n?/, "").replace(/```$/, "");
-        return `<pre><code>${code}</code></pre>`;
-      }
-      return `<p>${trimmed.replace(/\n/g, "<br/>")}</p>`;
-    })
-    .filter(Boolean)
-    .join("\n");
-}
-
+/**
+ * The blog's RSS and Atom feed. Each item carries the full Post as HTML, so
+ * it reads well in feed readers and imports cleanly into dev.to.
+ */
 export function createBlogFeed() {
   const posts = getPosts();
+  const baseUrl = getBaseUrl();
+  const latest = posts.map(lastUpdated).sort().at(-1);
 
   const feed = new Feed({
-    title: "Bakar's Blog",
-    description: "Latest blog posts from Muhammad Abu Bakar",
-    id: getBaseUrl(),
+    title: `${SITE.name}'s Blog`,
+    description: `Posts by ${SITE.name}, ${SITE.headline.toLowerCase()}`,
+    id: getBaseUrl("/"),
     link: getBaseUrl("/blog"),
     language: "en",
-    image: getBaseUrl("/pic.jpg"),
-    favicon: getBaseUrl("/pic.jpg"),
+    image: getBaseUrl(AUTHOR.avatar),
+    favicon: getBaseUrl("/icon"),
     copyright: `All rights reserved ${new Date().getFullYear()}, ${AUTHOR.name}`,
-    updated: posts[0] ? new Date(posts[0].date) : new Date(),
+    updated: latest ? new Date(latest) : undefined,
     feedLinks: {
       rss: getBaseUrl("/rss.xml"),
       atom: getBaseUrl("/feed.xml"),
@@ -53,41 +32,43 @@ export function createBlogFeed() {
     author: {
       name: AUTHOR.name,
       email: AUTHOR.email,
-      link: getBaseUrl(),
+      link: baseUrl,
     },
   });
 
-  posts.forEach((post) => {
-    const slug = post.slug;
-    const postUrl = getBaseUrl(`/blog/post/${slug}`);
-    const coverImage = post.image.startsWith("http")
+  for (const post of posts) {
+    const postUrl = getBaseUrl(`/blog/post/${post.slug}`);
+    const coverImage = /^https?:\/\//.test(post.image)
       ? post.image
       : getBaseUrl(post.image);
+    const body = markdownToFeedHtml(post.content, {
+      documentDir: post.documentDir,
+      baseUrl,
+    });
 
     feed.addItem({
       title: post.title,
+      // The Post's URL on the site is its id and canonical link.
       id: postUrl,
       link: postUrl,
       description: post.description,
-      content: `<article>
-        <img src="${coverImage}" alt="${post.title}" />
-        ${markdownToHtml(post.content)}
-      </article>`,
+      content: `<p><img src="${coverImage}" alt="" /></p>\n${body}`,
       author: [
         {
           name: post.author,
           email: AUTHOR.email,
-          link: AUTHOR.twitterUrl,
+          link: baseUrl,
         },
       ],
-      date: new Date(post.date),
+      date: new Date(lastUpdated(post)),
+      published: new Date(post.date),
       image: coverImage,
       category: [
-        { name: post.category },
-        ...post.tags.map((tag) => ({ name: tag })),
+        { name: post.category, term: post.category },
+        ...post.tags.map((tag) => ({ name: tag, term: tag })),
       ],
     });
-  });
+  }
 
   return feed;
 }

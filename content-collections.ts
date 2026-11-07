@@ -127,6 +127,8 @@ const posts = defineCollection({
     return {
       ...transformed,
       slug,
+      /** The folder relative to `content/`, for resolving the Post's images. */
+      documentDir,
       image: resolveAssetUrl(document.image, documentDir),
       headings,
     };
