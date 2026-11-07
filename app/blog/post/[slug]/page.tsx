@@ -7,13 +7,19 @@ import Heading from "@/components/heading/main";
 import { JsonLd } from "@/components/json-ld";
 import { MotionEffect } from "@/components/ui/animations/motion-effect";
 import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
-import { getPost, type Post } from "@/lib/content";
+import {
+  getPost,
+  getProject,
+  getProjectHref,
+  type Post,
+} from "@/lib/content";
 import { articleJsonLd } from "@/lib/json-ld";
 import { buildPostMetadata, type PostSeoData } from "@/lib/post-seo";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 import { MDXContent } from "@content-collections/mdx/react";
 import { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import readingTime from "reading-time";
@@ -63,6 +69,7 @@ export default async function BlogPost({ params }: Props) {
   }
 
   const seoData = toPostSeoData(rawPost);
+  const project = rawPost.project ? getProject(rawPost.project) : undefined;
   const readMinutes = readingTime(rawPost.content, {
     wordsPerMinute: 100,
   }).minutes;
@@ -96,6 +103,18 @@ export default async function BlogPost({ params }: Props) {
       </Heading>
       <div className="border-border bg-background relative border-t">
         <div className="mx-auto w-full max-w-5xl">
+          {project && (
+            <p className="text-muted-foreground mx-auto max-w-3xl px-6 pt-8 text-sm sm:px-4 md:px-0">
+              This post is about{" "}
+              <Link
+                href={getProjectHref(project)}
+                className="text-accent-foreground font-medium underline underline-offset-4"
+              >
+                {project.title}
+              </Link>
+              .
+            </p>
+          )}
           <MotionEffect
             fade
             blur="10px"

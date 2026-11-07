@@ -1,5 +1,6 @@
 import AUTHOR from "@/config/seo/author";
 import { remarkContentAssets, resolveAssetUrl } from "@/lib/content-assets.mjs";
+import { hasCaseStudy } from "@/lib/content-rules";
 import { slugify } from "@/lib/utils";
 import { defineCollection, defineConfig } from "@content-collections/core";
 import { compileMDX } from "@content-collections/mdx";
@@ -68,9 +69,22 @@ const posts = defineCollection({
     category: z.string(),
     tags: z.array(z.string()),
     draft: z.boolean().default(false),
+    /** The slug of the Project this Post is about, if any. */
+    project: z.string().optional(),
   }),
   transform: async (document, context) => {
     const { slug, documentDir, sourcePath } = locate("posts", document._meta);
+
+    if (document.project) {
+      const projectSlugs = context
+        .documents(projects)
+        .map((project) => locate("projects", project._meta).slug);
+      if (!projectSlugs.includes(document.project)) {
+        throw new Error(
+          `${sourcePath} says it is about project "${document.project}", but there is no such Project. Known projects: ${projectSlugs.join(", ")}`,
+        );
+      }
+    }
 
     const transformed = await compiling(sourcePath, () =>
       transformMDX(bodyToCompile(document), context, {
@@ -121,6 +135,8 @@ const projects = defineCollection({
   include: ["**/*.md", "**/*.mdx"],
   schema: (z) => ({
     title: z.string(),
+    /** One sentence for the Case Study page, meta description and Share Card. */
+    description: z.string().optional(),
     stack: z.array(z.string()),
     date: z.string(),
     image: z.string(),
@@ -148,6 +164,7 @@ const projects = defineCollection({
       slug,
       image: resolveAssetUrl(document.image, documentDir),
       mdx,
+      hasCaseStudy: hasCaseStudy(document),
     };
   },
 });

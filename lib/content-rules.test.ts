@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { newestFirst, visible } from "./content-rules";
+import {
+  hasCaseStudy,
+  newestFirst,
+  postsAbout,
+  visible,
+} from "./content-rules";
 
 describe("newestFirst", () => {
   it("orders by date, newest first", () => {
@@ -47,5 +52,31 @@ describe("visible", () => {
 
   it("keeps Drafts when drafts are shown", () => {
     expect(visible(items, { showDrafts: true })).toHaveLength(2);
+  });
+});
+
+describe("hasCaseStudy", () => {
+  it("is true when the Project has body text", () => {
+    expect(hasCaseStudy({ content: "\n## The problem\n\nWords." })).toBe(true);
+  });
+
+  it("is false for an empty or whitespace-only body", () => {
+    expect(hasCaseStudy({ content: "" })).toBe(false);
+    expect(hasCaseStudy({ content: "\r\n  \n" })).toBe(false);
+  });
+});
+
+describe("postsAbout", () => {
+  it("returns only the Posts linked to the Project", () => {
+    const posts = [
+      { title: "A", project: "brain-wave" },
+      { title: "B" },
+      { title: "C", project: "slite" },
+      { title: "D", project: "brain-wave" },
+    ];
+    expect(postsAbout(posts, "brain-wave").map((p) => p.title)).toEqual([
+      "A",
+      "D",
+    ]);
   });
 });

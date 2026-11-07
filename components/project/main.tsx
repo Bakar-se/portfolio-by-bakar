@@ -1,10 +1,9 @@
 import Card from "@/components/ui/card";
 import DraftBadge from "@/components/ui/draft-badge";
-import { MDXContent } from "@content-collections/mdx/react";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
-import type { Project } from "@/lib/content";
+import { getProjectHref, type Project } from "@/lib/content";
 import { FadeUp } from "../ui/animations/fade-up";
 import { MotionEffect } from "../ui/animations/motion-effect";
 import BrowserWrapper from "./browser";
@@ -15,47 +14,6 @@ interface Props {
   project: Project;
   className?: string;
 }
-
-const renderMdxComponents = {
-  p: (props: React.HTMLProps<HTMLParagraphElement>) => (
-    <p
-      className="text-foreground my-2 text-lg leading-relaxed text-pretty"
-      {...props}
-    />
-  ),
-  a: (props: React.HTMLProps<HTMLAnchorElement>) => {
-    const className =
-      "text-foreground hover:text-accent-foreground underline underline-offset-4";
-    if (props.href?.startsWith("/")) {
-      return (
-        <Link href={props.href} className={className} {...props}>
-          {props.children}
-        </Link>
-      );
-    }
-    if (props.href?.startsWith("#")) {
-      return (
-        <a href={props.href} className={className} {...props}>
-          {props.children}
-        </a>
-      );
-    }
-    return (
-      <a
-        href={props.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={className}
-        {...props}
-      >
-        {props.children}
-      </a>
-    );
-  },
-  strong: (props: React.HTMLProps<HTMLElement>) => (
-    <strong className="text-foreground font-medium" {...props} />
-  ),
-};
 
 const ProjectImages: FC<{ image: string; title: string }> = ({
   image,
@@ -89,6 +47,9 @@ const ProjectImages: FC<{ image: string; title: string }> = ({
 );
 
 const ProjectItem: FC<Props> = ({ project, className }) => {
+  const href = getProjectHref(project);
+  const isExternal = /^https?:///.test(href);
+
   return (
     <FadeUp delay={0.6} duration={0.3}>
       <Card className={className}>
@@ -105,33 +66,42 @@ const ProjectItem: FC<Props> = ({ project, className }) => {
           <article className="z-1 mx-auto mt-4 gap-x-4 px-8 py-4 pb-3 text-center sm:px-10 sm:pb-0">
             {project.draft && <DraftBadge className="mb-3" />}
             <h2 className="text-accent-foreground text-3xl font-bold tracking-tight text-pretty sm:text-4xl">
-              {project.title}
+              {project.hasCaseStudy ? (
+                <Link href={href} className="hover:underline">
+                  {project.title}
+                </Link>
+              ) : (
+                project.title
+              )}
             </h2>
 
             <Stack stack={project.stack} className="mx-auto mt-4" />
 
-            {/* Description */}
-            <div className="prose prose-sm dark:prose-invert mx-auto mt-4">
-              <MDXContent code={project.mdx} components={renderMdxComponents} />
-            </div>
+            {project.description && (
+              <p className="text-foreground mx-auto mt-4 max-w-prose text-lg leading-relaxed text-pretty">
+                {project.description}
+              </p>
+            )}
 
             <LinkButtons
-              learnMoreUrl={project.githubUrl || ""}
-              liveDemoUrl={
-                project.webUrl === null
-                  ? project.youtubeUrl || ""
-                  : project.webUrl
-              }
               projectTitle={project.title}
+              caseStudyUrl={project.hasCaseStudy ? href : undefined}
+              githubUrl={project.githubUrl}
+              liveDemoUrl={project.webUrl ?? project.youtubeUrl}
             />
           </article>
         </MotionEffect>
         <div className="mt-6 px-8">
           <Link
-            href={project.webUrl || ""}
-            target="_blank"
+            href={href}
+            target={isExternal ? "_blank" : undefined}
+            rel={isExternal ? "noopener noreferrer" : undefined}
             className="group"
-            aria-label={`View ${project.title} live demo`}
+            aria-label={
+              project.hasCaseStudy
+                ? `Read the ${project.title} case study`
+                : `View ${project.title}`
+            }
           >
             <BrowserWrapper>
               <ProjectImages image={project.image} title={project.title} />

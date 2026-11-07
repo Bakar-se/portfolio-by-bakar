@@ -19,3 +19,16 @@ export function visible<T extends { draft: boolean }>(
 ): T[] {
   return items.filter((item) => showDrafts || !item.draft);
 }
+
+/** A Project has a Case Study when its file has body text. */
+export function hasCaseStudy(project: { content: string }): boolean {
+  return project.content.trim().length > 0;
+}
+
+/** The Posts that say they are about a given Project. */
+export function postsAbout<T extends { project?: string }>(
+  posts: readonly T[],
+  projectSlug: string,
+): T[] {
+  return posts.filter((post) => post.project === projectSlug);
+}

@@ -1,5 +1,5 @@
 import { getBaseUrl } from "@/lib/utils";
-import { getPosts } from "@/lib/content";
+import { getCaseStudies, getPosts } from "@/lib/content";
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -51,5 +51,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return [...staticPages, ...blogPosts];
+  const caseStudies = getCaseStudies().map((project) => ({
+    url: getBaseUrl(`/projects/${project.slug}`),
+    lastModified: new Date(project.date),
+  }));
+
+  return [...staticPages, ...blogPosts, ...caseStudies];
 }

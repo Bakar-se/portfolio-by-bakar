@@ -7,7 +7,7 @@ import {
   type Post,
   type Project,
 } from "content-collections";
-import { newestFirst, visible } from "./content-rules";
+import { newestFirst, postsAbout, visible } from "./content-rules";
 
 export type { Post, Project };
 
@@ -28,13 +28,39 @@ export function getProjects(): Project[] {
   return newestFirst(visible(allProjects, { showDrafts }));
 }
 
+export function getProject(slug: string): Project | undefined {
+  return getProjects().find((project) => project.slug === slug);
+}
+
+/** Projects with a Case Study page at `/projects/<slug>`. */
+export function getCaseStudies(): Project[] {
+  return getProjects().filter((project) => project.hasCaseStudy);
+}
+
+/** The Posts about a Project, newest first. */
+export function getPostsAbout(project: Project): Post[] {
+  return postsAbout(getPosts(), project.slug);
+}
+
+/** A one-line summary of a Project, for metadata and Share Cards. */
+export function describeProject(project: Project): string {
+  return (
+    project.description ??
+    `${project.title}, built with ${project.stack.join(", ")}.`
+  );
+}
+
 /** Projects shown on the home page and in the projects menu. */
 export function getFeaturedProjects(): Project[] {
   return getProjects().filter((project) => project.featured);
 }
 
-/** Where a Project card or menu item links to. */
+/**
+ * Where a Project card or menu item links to: its Case Study if it has one,
+ * otherwise the live site, code or video.
+ */
 export function getProjectHref(project: Project): string {
+  if (project.hasCaseStudy) return `/projects/${project.slug}`;
   return (
     project.webUrl ?? project.githubUrl ?? project.youtubeUrl ?? "/projects"
   );
