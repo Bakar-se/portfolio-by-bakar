@@ -17,7 +17,8 @@ const COLORS = {
   subtle: "#d4d4d8",
 };
 
-async function loadPhoto(): Promise<string> {
+/** Bakar's photo as a data URL, for Share Cards and icons. */
+export async function loadPhoto(): Promise<string> {
   const photo = await readFile(join(process.cwd(), "public", "pic.jpg"));
   return `data:image/jpeg;base64,${photo.toString("base64")}`;
 }

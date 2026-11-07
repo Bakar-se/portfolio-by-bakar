@@ -1,6 +1,6 @@
 import TailwindIndicator from "@/components/ui/tailwind-indicator";
 import { JsonLd } from "@/components/json-ld";
-import { AUTHOR, FAVICONS, KEYWORDS } from "@/config/seo";
+import { AUTHOR } from "@/config/seo";
 import { personJsonLd } from "@/lib/json-ld";
 import { getPageHead, SITE, TITLE_TEMPLATE } from "@/lib/metadata";
 import { cn, getBaseUrl } from "@/lib/utils";
@@ -41,7 +41,6 @@ export const metadata: Metadata = {
   },
   description: page.description,
   referrer: "origin-when-cross-origin",
-  keywords: (KEYWORDS ?? []).join(", "),
 
   // Author information for content attribution
   authors: [
@@ -61,10 +60,6 @@ export const metadata: Metadata = {
       "application/rss+xml": `${getBaseUrl("/rss.xml")}`,
       "application/atom+xml": `${getBaseUrl("/feed.xml")}`,
     },
-    languages: {
-      "en-US": getBaseUrl(),
-      "x-default": getBaseUrl(),
-    },
   },
 
   // Apple web app configuration for iOS devices
@@ -79,9 +74,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-
-  // Favicon configuration for browser tabs and bookmarks
-  icons: FAVICONS,
 
   // Share Card for the home page. Its image comes from app/opengraph-image.tsx;
   // other pages set their own title, description and URL (see lib/metadata.ts).

@@ -13,7 +13,7 @@ import {
   getProjectHref,
   type Post,
 } from "@/lib/content";
-import { articleJsonLd } from "@/lib/json-ld";
+import { blogPostingJsonLd } from "@/lib/json-ld";
 import { buildPostMetadata, type PostSeoData } from "@/lib/post-seo";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
@@ -76,7 +76,7 @@ export default async function BlogPost({ params }: Props) {
 
   return (
     <Fragment>
-      <JsonLd data={articleJsonLd(seoData, slug)} />
+      <JsonLd data={blogPostingJsonLd(seoData, slug)} />
       <Header showProgressBar={true} />
       <Heading variant="blog">
         <MotionEffect

@@ -26,7 +26,6 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
     metadataBase: new URL(getBaseUrl()),
     title: post.title,
     description: post.description,
-    keywords: post.tags.join(", "),
     authors: [{ name: post.author, url: AUTHOR.twitterUrl }],
     alternates: {
       canonical,
