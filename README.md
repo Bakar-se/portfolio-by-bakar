@@ -93,6 +93,19 @@ To say a Post is about a Project, add `project: <project-folder-name>` to the Po
 2. In Obsidian, run **Obsidian Git: Commit all changes**, then **Obsidian Git: Push**.
 3. Vercel deploys `main` automatically. If the content has an error (missing frontmatter, a stray `{` or `<` in the text), the deploy fails and the build log names the file.
 
+### After publishing a Post
+
+1. Wait for the Vercel deploy, open the Post, and check its Share Card (the preview shown when the link is shared) with the [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/).
+2. In [Google Search Console](https://search.google.com/search-console), paste the Post's URL into **URL Inspection** and click **Request indexing**.
+3. On dev.to, open the draft the RSS import created (its canonical URL already points here), check it, and publish it.
+4. For tutorials, Cross-post to [Hashnode](https://hashnode.com/): paste the Post and set its canonical URL to the Post on this site.
+5. Share it on LinkedIn, X and relevant [daily.dev](https://daily.dev/) Squads, adding a source tag to each link so analytics show where readers came from:
+   - `https://www.bakar.info/blog/post/my-new-post?utm_source=linkedin`
+   - `?utm_source=x`
+   - `?utm_source=dailydev`
+
+daily.dev no longer accepts personal blogs as sources (since January 2024), so Squads are the way to share there.
+
 ## License
 
 MIT. Originally built from [Next.js Portfolio App v2](https://github.com/timtbdev/Next.js-Portfolio-App-v2) by Tim.
