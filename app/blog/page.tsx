@@ -9,7 +9,7 @@ import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
 import { HEAD } from "@/config/seo";
 import { getBaseUrl } from "@/lib/utils";
 import { HeadType } from "@/types";
-import { allPosts } from "content-collections";
+import { getPosts } from "@/lib/content";
 import { Metadata } from "next";
 import { Fragment, Suspense } from "react";
 
@@ -31,9 +31,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const posts = allPosts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const posts = getPosts();
 
   return (
     <Fragment>

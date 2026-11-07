@@ -9,7 +9,6 @@ export interface PostSeoData {
   date: string;
   category: string;
   tags: string[];
-  seo?: string[];
   image?: string;
   author: string;
 }
@@ -31,7 +30,7 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
     metadataBase: new URL(getBaseUrl()),
     title: post.title,
     description: post.description,
-    keywords: post.seo?.join(", ") ?? post.tags.join(", "),
+    keywords: post.tags.join(", "),
     authors: [{ name: post.author, url: AUTHOR.twitterUrl }],
     alternates: {
       canonical,

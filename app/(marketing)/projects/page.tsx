@@ -7,8 +7,8 @@ import MainTitle from "@/components/ui/main-title";
 import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
 import { HEAD } from "@/config/seo";
 import { getBaseUrl } from "@/lib/utils";
-import { HeadType, ProjectType } from "@/types";
-import { allProjects } from "content-collections";
+import { getProjects } from "@/lib/content";
+import { HeadType } from "@/types";
 import { Metadata } from "next";
 import { Fragment } from "react";
 
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ProjectPage() {
-  const projects: ProjectType[] = allProjects.sort((a, b) => a.order - b.order);
+  const projects = getProjects();
 
   return (
     <Fragment>
@@ -64,8 +64,12 @@ export default async function ProjectPage() {
       </Heading>
       <div className="border-border bg-background relative min-h-[50vh] max-w-full border-t">
         <div className="relative mx-auto -mt-12 max-w-3xl px-4 sm:px-6 lg:px-8">
-          {projects.map((project, index) => (
-            <ProjectItem key={index} project={project} className="mb-8" />
+          {projects.map((project) => (
+            <ProjectItem
+              key={project.slug}
+              project={project}
+              className="mb-8"
+            />
           ))}
         </div>
       </div>

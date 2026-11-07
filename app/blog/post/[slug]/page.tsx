@@ -7,12 +7,12 @@ import Heading from "@/components/heading/main";
 import { JsonLd } from "@/components/json-ld";
 import { MotionEffect } from "@/components/ui/animations/motion-effect";
 import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
+import { getPost, type Post } from "@/lib/content";
 import { articleJsonLd } from "@/lib/json-ld";
 import { buildPostMetadata, type PostSeoData } from "@/lib/post-seo";
 import { source } from "@/lib/source";
 import { getMDXComponents } from "@/mdx-components";
 import { MDXContent } from "@content-collections/mdx/react";
-import { allPosts } from "content-collections";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
@@ -24,22 +24,13 @@ interface Props {
   }>;
 }
 
-function getRawPost(slug: string) {
-  return allPosts.find(
-    (post) => post.slug === slug,
-  );
-}
-
-function toPostSeoData(
-  post: NonNullable<ReturnType<typeof getRawPost>>,
-): PostSeoData {
+function toPostSeoData(post: Post): PostSeoData {
   return {
     title: post.title,
     description: post.description,
     date: post.date,
     category: post.category,
     tags: post.tags,
-    seo: post.seo,
     image: post.image,
     author: post.author,
   };
@@ -56,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = source.getPage([slug]);
   if (!post) notFound();
 
-  const rawPost = getRawPost(slug);
+  const rawPost = getPost(slug);
   if (!rawPost) notFound();
 
   return buildPostMetadata(toPostSeoData(rawPost), slug);
@@ -65,7 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPost({ params }: Props) {
   const { slug } = await params;
   const post = source.getPage([slug]);
-  const rawPost = getRawPost(slug);
+  const rawPost = getPost(slug);
 
   if (!post || !rawPost) {
     return notFound();

@@ -5,14 +5,11 @@ import Intro from "@/components/home/intro";
 import Profile from "@/components/home/profile";
 import ProjectItem from "@/components/project/main";
 import ScrollToTopButton from "@/components/ui/scroll-to-top-button";
-import { ProjectType } from "@/types";
-import { allProjects } from "content-collections";
+import { getFeaturedProjects } from "@/lib/content";
 import { Fragment } from "react";
 
 export default async function HomePage() {
-  const projects: ProjectType[] = allProjects
-    .filter((project) => project.featured === true)
-    .sort((a, b) => a.order - b.order);
+  const projects = getFeaturedProjects();
 
   return (
     <Fragment>
@@ -23,8 +20,8 @@ export default async function HomePage() {
       <div className="border-border bg-background relative min-h-[50vh] max-w-full border-t">
         <div className="relative mx-auto -mt-10 max-w-5xl items-center px-4 sm:px-6 lg:px-8">
           <Intro className="mb-6" />
-          {projects.map((project, index) => (
-            <div key={index} className="mb-8">
+          {projects.map((project) => (
+            <div key={project.slug} className="mb-8">
               <ProjectItem project={project} />
             </div>
           ))}

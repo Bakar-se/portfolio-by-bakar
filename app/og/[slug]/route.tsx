@@ -1,4 +1,4 @@
-import { allPosts } from "content-collections";
+import { getPost } from "@/lib/content";
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -17,18 +17,12 @@ async function loadFont() {
   return fetch(match[1]).then((res) => res.arrayBuffer());
 }
 
-function getPostBySlug(slug: string) {
-  return allPosts.find(
-    (post) => post.slug === slug,
-  );
-}
-
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPost(slug);
 
   if (!post) {
     return new Response("Not found", { status: 404 });

@@ -2,24 +2,9 @@
 title: "How to transfer your domain to Vercel"
 description: "Why transfer your domain to Vercel? Because it's easier to manage everything in one place."
 image: "cover.jpg"
-author: "Muhammad Abu Bakar"
-authorAvatar: "/pic.jpg"
 date: "2025-06-14"
 category: "Vercel"
 tags: ["Vercel", "DNS", "Domain Transfer"]
-seo:
-  [
-    "Vercel",
-    "DNS",
-    "Domain Transfer",
-    "Vercel DNS",
-    "Vercel DNS records",
-    "Vercel DNS setup",
-    "Vercel DNS transfer",
-    "Vercel DNS configuration",
-    "Vercel DNS management",
-    "Vercel DNS setup guide",
-  ]
 ---
 
 ## Step 1: Check Transfer Eligibility

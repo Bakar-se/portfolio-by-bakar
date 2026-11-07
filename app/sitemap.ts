@@ -1,10 +1,10 @@
 import { getBaseUrl } from "@/lib/utils";
-import { allPosts } from "content-collections";
+import { getPosts } from "@/lib/content";
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Generate sitemap entries for blog posts
-  const blogPosts = allPosts.map((post) => ({
+  const blogPosts = getPosts().map((post) => ({
     url: getBaseUrl(`/blog/post/${post.slug}`),
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const, // Blog posts typically don't change often

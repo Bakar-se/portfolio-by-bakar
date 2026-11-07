@@ -1,3 +1,4 @@
+import AUTHOR from "@/config/seo/author";
 import { remarkContentAssets, resolveAssetUrl } from "@/lib/content-assets.mjs";
 import { slugify } from "@/lib/utils";
 import { defineCollection, defineConfig } from "@content-collections/core";
@@ -49,12 +50,11 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string(),
     image: z.string(),
-    author: z.string(),
-    authorAvatar: z.string(),
+    author: z.string().default(AUTHOR.name),
+    authorAvatar: z.string().default(AUTHOR.avatar),
     date: z.string(),
     category: z.string(),
     tags: z.array(z.string()),
-    seo: z.array(z.string()),
   }),
   transform: async (document, context) => {
     const { slug, documentDir, sourcePath } = locate("posts", document._meta);
@@ -107,10 +107,9 @@ const projects = defineCollection({
   directory: "content/projects",
   include: ["**/*.md", "**/*.mdx"],
   schema: (z) => ({
-    order: z.number(),
     title: z.string(),
-    category: z.string(),
-    created_at: z.string(),
+    stack: z.array(z.string()),
+    date: z.string(),
     image: z.string(),
     featured: z.boolean(),
     webUrl: z.string().nullable(),

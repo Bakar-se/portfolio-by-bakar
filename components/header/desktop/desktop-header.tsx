@@ -21,8 +21,10 @@ import { ThemeSwitcher } from "../shared/theme-switcher";
 import LogoButton from "./logo";
 import NavigationAbout from "./navigations/about/navigation-about";
 import NavigationProjects from "./navigations/projects/navigation-projects";
+import type { ProjectMenuItem } from "@/lib/content";
 
 interface Props {
+  featuredProjects: ProjectMenuItem[];
   activePath: string;
 }
 
@@ -44,7 +46,7 @@ const NavigationErrorFallback = () => (
   </div>
 );
 
-const DesktopHeader: FC<Props> = memo(({ activePath }) => {
+const DesktopHeader: FC<Props> = memo(({ activePath, featuredProjects }) => {
   const isActive = useCallback(
     (path: string) => {
       if (path === "/") return activePath === "/";
@@ -66,7 +68,8 @@ const DesktopHeader: FC<Props> = memo(({ activePath }) => {
   const renderNavigationItem = useCallback(
     (link: (typeof navigationLinks)[0]) => {
       const isDropdown =
-        link.subNavigationLinks && link.subNavigationLinks.length > 0;
+        (link.subNavigationLinks && link.subNavigationLinks.length > 0) ||
+        (link.href === "/projects" && featuredProjects.length > 0);
 
       if (isDropdown) {
         return (
@@ -87,7 +90,9 @@ const DesktopHeader: FC<Props> = memo(({ activePath }) => {
               <ErrorBoundary FallbackComponent={NavigationErrorFallback}>
                 <Suspense fallback={<NavigationContentFallback />}>
                   {link.label === "About" && <NavigationAbout />}
-                  {link.label === "Projects" && <NavigationProjects />}
+                  {link.label === "Projects" && (
+                    <NavigationProjects projects={featuredProjects} />
+                  )}
                 </Suspense>
               </ErrorBoundary>
             </NavigationMenuContent>
@@ -107,7 +112,7 @@ const DesktopHeader: FC<Props> = memo(({ activePath }) => {
         </NavigationMenuItem>
       );
     },
-    [isActive, getNavItemClassName],
+    [isActive, getNavItemClassName, featuredProjects],
   );
 
   return (

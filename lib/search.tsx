@@ -1,4 +1,4 @@
-import { allPosts } from "@/.content-collections/generated";
+import { getPosts } from "./content";
 import { PostType } from "@/types";
 import { JSX } from "react";
 import { levenshtein } from "./utils";
@@ -19,7 +19,7 @@ export async function getPostsBySearchQuery(query: string) {
   const searchWords = searchQuery.split(/\s+/).filter(Boolean);
   const results: SearchResult[] = [];
 
-  for (const post of allPosts) {
+  for (const post of getPosts()) {
     let score = 0;
     const searchableContent = {
       title: post.title.toLowerCase(),
@@ -79,7 +79,6 @@ export async function getPostsBySearchQuery(query: string) {
           date: post.date,
           category: post.category,
           tags: post.tags,
-          seo: post.seo,
         },
         content: getContextAroundMatch(post.content, searchQuery),
         score,

@@ -10,6 +10,7 @@ export type HeadType = {
 
 export type AuthorType = {
   name: string;
+  avatar: string;
   twitterUrl: string;
   twitterAddress: string;
   email: string;
@@ -47,36 +48,6 @@ export type PostType = {
   };
 };
 
-export type ProjectCategory =
-  | "Android"
-  | "Next.js"
-  | "Web"
-  | "Mobile"
-  | "Other";
-
-// This is return type of content-collections
-export type ProjectType = {
-  slug: string;
-  order: number;
-  title: string;
-  category: string;
-  created_at: string;
-  image: string;
-  featured: boolean;
-  webUrl: string | null;
-  youtubeUrl: string | null;
-  githubUrl: string | null;
-  mdx: string;
-  content: string;
-  _meta: {
-    filePath: string;
-    fileName: string;
-    directory: string;
-    path: string;
-    extension: string;
-  };
-};
-
 type SearchResult = {
   id: string;
   metadata: any;
@@ -106,10 +77,3 @@ export type NavigationLink = {
   subNavigationLinks?: NavigationLink[];
 };
 
-export type ProjectSubNavType = {
-  title: string;
-  description: string;
-  image?: string;
-  href: string;
-  icon?: IconType;
-};

@@ -1,6 +1,6 @@
 import AUTHOR from "@/config/seo/author";
 import { getBaseUrl } from "@/lib/utils";
-import { allPosts } from "content-collections";
+import { getPosts } from "@/lib/content";
 import { Feed } from "feed";
 
 function markdownToHtml(content: string): string {
@@ -34,9 +34,7 @@ function markdownToHtml(content: string): string {
 }
 
 export function createBlogFeed() {
-  const posts = allPosts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const posts = getPosts();
 
   const feed = new Feed({
     title: "Bakar's Blog",

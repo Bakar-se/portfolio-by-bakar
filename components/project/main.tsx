@@ -3,15 +3,15 @@ import { MDXContent } from "@content-collections/mdx/react";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
-import { ProjectType } from "types";
+import type { Project } from "@/lib/content";
 import { FadeUp } from "../ui/animations/fade-up";
 import { MotionEffect } from "../ui/animations/motion-effect";
 import BrowserWrapper from "./browser";
-import Category from "./category";
+import Stack from "./stack";
 import LinkButtons from "./link-buttons";
 
 interface Props {
-  project: ProjectType;
+  project: Project;
   className?: string;
 }
 
@@ -106,14 +106,7 @@ const ProjectItem: FC<Props> = ({ project, className }) => {
               {project.title}
             </h2>
 
-            <div className="mx-auto mt-4 flex justify-center">
-              
-                <Category
-                  category={project.category}
-                  className="text-md text-foreground font-semibold"
-                />
-              
-            </div>
+            <Stack stack={project.stack} className="mx-auto mt-4" />
 
             {/* Description */}
             <div className="prose prose-sm dark:prose-invert mx-auto mt-4">

@@ -2,29 +2,9 @@
 title: "Implementing next-mdx-remote in Next.js"
 description: "Learn how to implement next-mdx-remote in Next.js 15 using the App Router to dynamically render raw MDX content. This guide covers setup, serialization, and rendering for a seamless MDX integration."
 image: "cover.jpg"
-author: "Muhammad Abu Bakar"
-authorAvatar: "/pic.jpg"
 date: "2025-02-08"
 category: "Next.js"
 tags: ["Next.js", "next-mdx-remote", "App Router", "MDX", "Dynamic MDX"]
-seo:
-  [
-    "Next.js 15",
-    "next-mdx-remote",
-    "Next.js App Router",
-    "MDX with Next.js",
-    "Next.js dynamic MDX",
-    "rendering MDX in Next.js",
-    "Next.js markdown support",
-    "Next.js tutorial",
-    "Next.js MDX integration",
-    "Next.js static site",
-    "Next.js server components",
-    "MDX serialization Next.js",
-    "Next.js MDXRenderer",
-    "dynamic content Next.js",
-    "Next.js App Router tutorial",
-  ]
 ---
 
 ## Introduction
