@@ -14,16 +14,11 @@ export interface PostSeoData {
   author: string;
 }
 
-export function getPostOgImageUrl(slug: string): string {
-  return getBaseUrl(`/og/${slug}`);
-}
-
 export function getPostCanonicalUrl(slug: string): string {
   return getBaseUrl(`/blog/post/${slug}`);
 }
 
 export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
-  const ogImageUrl = getPostOgImageUrl(slug);
   const canonical = getPostCanonicalUrl(slug);
   const ogDescription = truncateDescription(post.description, 200);
 
@@ -52,15 +47,6 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
       authors: [post.author],
       section: post.category,
       tags: post.tags,
-      images: [
-        {
-          url: ogImageUrl,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-          type: "image/png",
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
@@ -68,7 +54,6 @@ export function buildPostMetadata(post: PostSeoData, slug: string): Metadata {
       description: ogDescription,
       site: AUTHOR.twitterAddress,
       creator: AUTHOR.twitterAddress,
-      images: [ogImageUrl],
     },
   };
 }

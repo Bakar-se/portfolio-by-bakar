@@ -1,6 +1,6 @@
 import TailwindIndicator from "@/components/ui/tailwind-indicator";
 import { JsonLd } from "@/components/json-ld";
-import { AUTHOR, FAVICONS, KEYWORDS, OPEN_GRAPH } from "@/config/seo";
+import { AUTHOR, FAVICONS, KEYWORDS } from "@/config/seo";
 import { personJsonLd } from "@/lib/json-ld";
 import { getPageHead, SITE, TITLE_TEMPLATE } from "@/lib/metadata";
 import { cn, getBaseUrl } from "@/lib/utils";
@@ -83,8 +83,8 @@ export const metadata: Metadata = {
   // Favicon configuration for browser tabs and bookmarks
   icons: FAVICONS,
 
-  // OpenGraph metadata for social media sharing
-  // This enables rich previews when the site is shared on social platforms
+  // Share Card for the home page. Its image comes from app/opengraph-image.tsx;
+  // other pages set their own title, description and URL (see lib/metadata.ts).
   openGraph: {
     type: "website",
     locale: "en",
@@ -92,33 +92,13 @@ export const metadata: Metadata = {
     title: page.title,
     description: page.description,
     siteName: SITE.name,
-    images: [
-      {
-        url: OPEN_GRAPH.image,
-        width: 1200,
-        height: 630,
-        alt: page.title,
-        type: "image/png",
-      },
-    ],
   },
 
-  // Twitter card metadata for Twitter sharing
-  // This enables rich previews when the site is shared on Twitter
   twitter: {
     card: "summary_large_image",
     title: page.title,
     description: page.description,
     site: AUTHOR.twitterAddress,
-    images: [
-      {
-        url: OPEN_GRAPH.twitterImage,
-        width: 1200,
-        height: 675,
-        alt: page.title,
-        type: "image/png",
-      },
-    ],
     creator: AUTHOR.twitterAddress,
   },
 };

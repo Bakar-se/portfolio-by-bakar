@@ -6,14 +6,14 @@ export function articleJsonLd(post: PostSeoData, slug: string) {
   const url = getBaseUrl(`/blog/post/${slug}`);
   const image = post.image?.startsWith("http")
     ? post.image
-    : getBaseUrl(post.image ?? "/images/opengraph-image.png");
+    : getBaseUrl(post.image ?? "/pic.jpg");
 
   return {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     description: post.description,
-    image: [image, getBaseUrl(`/og/${slug}`)],
+    image,
     datePublished: post.date,
     dateModified: post.date,
     author: {
