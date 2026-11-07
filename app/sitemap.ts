@@ -5,7 +5,7 @@ import type { MetadataRoute } from "next";
 export default function sitemap(): MetadataRoute.Sitemap {
   // Generate sitemap entries for blog posts
   const blogPosts = allPosts.map((post) => ({
-    url: getBaseUrl(`/blog/post/${post._meta.path}`),
+    url: getBaseUrl(`/blog/post/${post.slug}`),
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const, // Blog posts typically don't change often
     priority: 0.5,

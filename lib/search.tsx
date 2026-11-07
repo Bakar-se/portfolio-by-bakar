@@ -25,7 +25,7 @@ export async function getPostsBySearchQuery(query: string) {
       title: post.title.toLowerCase(),
       description: post.description.toLowerCase(),
       content: post.content.toLowerCase(),
-      fileName: post._meta.path.toLowerCase(),
+      fileName: post.slug.toLowerCase(),
     };
 
     // Calculate score based on different factors
@@ -69,7 +69,7 @@ export async function getPostsBySearchQuery(query: string) {
     // Only include results with a minimum score
     if (score > 0) {
       results.push({
-        fileName: post._meta.path,
+        fileName: post.slug,
         data: {
           title: post.title,
           description: post.description,

@@ -60,7 +60,7 @@ export function createBlogFeed() {
   });
 
   posts.forEach((post) => {
-    const slug = post._meta.path.replace(/\.mdx?$/, "");
+    const slug = post.slug;
     const postUrl = getBaseUrl(`/blog/post/${slug}`);
     const coverImage = post.image.startsWith("http")
       ? post.image

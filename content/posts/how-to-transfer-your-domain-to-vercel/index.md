@@ -1,7 +1,7 @@
 ---
 title: "How to transfer your domain to Vercel"
 description: "Why transfer your domain to Vercel? Because it's easier to manage everything in one place."
-image: "/images/posts/how-to-transfer-your-domain-to-vercel/cover.jpg"
+image: "cover.jpg"
 author: "Muhammad Abu Bakar"
 authorAvatar: "/pic.jpg"
 date: "2025-06-14"

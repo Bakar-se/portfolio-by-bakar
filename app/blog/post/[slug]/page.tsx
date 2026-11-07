@@ -26,7 +26,7 @@ interface Props {
 
 function getRawPost(slug: string) {
   return allPosts.find(
-    (post) => post._meta.path.replace(/\.mdx?$/, "") === slug,
+    (post) => post.slug === slug,
   );
 }
 

@@ -63,7 +63,7 @@ const ProjectImages: FC<{ image: string; title: string }> = ({
   <>
     <Image
       className="z-1 mx-auto hidden max-w-full grayscale group-hover:grayscale-0 sm:block"
-      src={`/images/projects/${image}`}
+      src={image}
       alt={`Screenshot of ${title}`}
       width={1024}
       height={300}
@@ -75,7 +75,7 @@ const ProjectImages: FC<{ image: string; title: string }> = ({
     />
     <Image
       className="z-1 mx-auto block max-w-full grayscale group-hover:grayscale-0 sm:hidden"
-      src={`/images/projects/${image}`}
+      src={image}
       alt={`Screenshot of ${title} - Mobile view`}
       width={512}
       height={384}

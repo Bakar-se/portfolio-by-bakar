@@ -56,6 +56,7 @@ export type ProjectCategory =
 
 // This is return type of content-collections
 export type ProjectType = {
+  slug: string;
   order: number;
   title: string;
   category: string;

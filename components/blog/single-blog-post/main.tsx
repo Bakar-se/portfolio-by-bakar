@@ -8,9 +8,7 @@ import { FC } from "react";
 import readingTime from "reading-time";
 
 interface BlogPost {
-  _meta: {
-    path: string;
-  };
+  slug: string;
   title: string;
   description: string;
   image: string;
@@ -26,7 +24,7 @@ interface Props {
 }
 
 const SingleBlogPost: FC<Props> = ({ post, className }) => {
-  const slug = post._meta.path.replace(/\.mdx?$/, "");
+  const slug = post.slug;
   const { title, description, image, author, authorAvatar, date } = post;
   const readTime = Math.ceil(
     readingTime(post.content, { wordsPerMinute: 100 }).minutes,

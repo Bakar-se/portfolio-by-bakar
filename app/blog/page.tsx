@@ -59,7 +59,7 @@ export default async function BlogPage() {
         <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-4 px-3 py-10 md:grid-cols-3 lg:px-4 xl:px-0">
           {posts?.map((post, index) => (
             <MotionEffect
-              key={post._meta.path}
+              key={post.slug}
               fade
               zoom
               inView
