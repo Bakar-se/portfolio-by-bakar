@@ -3,7 +3,7 @@ import { MDXContent } from "@content-collections/mdx/react";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
-import { ProjectType } from "types";
+import { ProjectType } from "@/types";
 import { FadeUp } from "../ui/animations/fade-up";
 import { MotionEffect } from "../ui/animations/motion-effect";
 import BrowserWrapper from "./browser";

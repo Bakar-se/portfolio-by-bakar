@@ -9,7 +9,7 @@ tags:
   - Next.js
   - Markdown
   - Vercel
-draft: true
+draft: false
 ---
 
 Before this post, I had published three posts on this site since early 2025. It wasn't for lack of ideas. Every post meant opening the repo in VS Code, writing Markdown in a code editor, saving screenshots into a separate `public/` folder, typing out image paths by hand, and committing. None of that is hard, but all of it is friction, and friction is what stops you writing.
