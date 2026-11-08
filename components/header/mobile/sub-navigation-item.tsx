@@ -21,6 +21,8 @@ const SubNavigationItem: FC<Props> = ({
   onClick,
   isLoading = false,
 }) => {
+  const isExternal = /^https?:\/\//.test(href);
+
   return (
     <Link
       className={cn(
@@ -30,6 +32,8 @@ const SubNavigationItem: FC<Props> = ({
         className,
       )}
       href={href}
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
       onClick={onClick}
       aria-disabled={isLoading}
       aria-label={`${label} — ${description}`}

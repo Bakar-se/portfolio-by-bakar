@@ -1,3 +1,4 @@
+import BookCall from "@/components/contact/book-call";
 import { ContactForm } from "@/components/contact/contact-form";
 import Footer from "@/components/footer/main";
 import Header from "@/components/header/main";
@@ -43,6 +44,11 @@ export default async function ContactPage() {
       </Heading>
       <div className="border-border bg-background relative min-h-[50vh] max-w-full border-t">
         <div className="relative mx-auto -mt-12 mb-6 max-w-3xl px-4 sm:mb-10 sm:px-6 lg:px-8">
+          <FadeUp delay={0.5} duration={0.3}>
+            <div className="mb-6">
+              <BookCall />
+            </div>
+          </FadeUp>
           <FadeUp delay={0.6} duration={0.3}>
             <Card>
               <div className="mx-auto w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-8">

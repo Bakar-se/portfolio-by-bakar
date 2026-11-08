@@ -1,7 +1,9 @@
+import { BOOKING_URL } from "@/config/booking";
 import { truncateDescription } from "@/lib/seo";
 import { NavigationLink } from "@/types";
 import {
   UserIcon as AboutMeIcon,
+  CalendarDaysIcon as BookCallIcon,
   RssIcon as BlogIcon,
   UserPenIcon as ContactIcon,
   HomeIcon,
@@ -39,6 +41,12 @@ const navigationLinks: NavigationLink[] = [
         label: "Contact",
         description: truncateDescription("Contact me", 30),
         icon: ContactIcon,
+      },
+      {
+        href: BOOKING_URL,
+        label: "Book a call",
+        description: truncateDescription("Pick a time to talk", 30),
+        icon: BookCallIcon,
       },
     ],
   },
